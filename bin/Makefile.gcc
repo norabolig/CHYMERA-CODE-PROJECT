@@ -1,0 +1,26 @@
+# makefile for chymera
+# make sure that GOMP_STACKSIZE is set to some very large number.
+ 
+ F95 = gfortran 
+ OMPF95 = gfortran -fopenmp -mcmodel=medium  
+ PREPROCESSOR = -x f95-cpp-input
+
+ CFLAGS = 
+ TARCH  = -frecord-marker=4 
+
+ ifeq ($(FLUID),1)
+   LFLAGS= -L/home/itp/acboley/lib64/lib -l gsl -l gslcblas
+   CINC += -I/home/itp/acboley/lib64/include 
+ else
+   LFAGS=
+ endif
+
+ FOPT =  -O3 $(PREPROCESSOR)  
+ CONSERVEOPT = $(PREPROCESSOR) 
+
+ FFREE = -ffree-form
+ FFIXED = -ffixed-form
+
+ CC = gcc 
+ COPT = -m64
+ CLINK = 
