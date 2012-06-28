@@ -45,7 +45,7 @@ real(kind=kreal), Dimension(:,:,:), Allocatable  ::  Poly_constant  ! ???
 
 contains
  
-subroutine states_allocate(nx, ny, nz)
+subroutine states_allocate(jmax2, kmax2, lmax)
 !=======================================================================
 ! 
 !    states_initialize
@@ -56,16 +56,16 @@ subroutine states_allocate(nx, ny, nz)
  
 implicit none
 
-integer, intent(in) :: nx, ny, nz
+integer, intent(in) :: jmax2, kmax2, lmax
 
 !---------------------------------------------------------------------
 
 !... Allocate memory for the variables
 
-if (.not. allocated(P))              allocate(P             (nx, ny, nz))
-if (.not. allocated(Cv))             allocate(Cv            (nx, ny, nz))
-if (.not. allocated(Eps))            allocate(Eps           (nx, ny, nz))
-if (.not. allocated(Poly_constant))  allocate(Poly_constant (nx, ny, nz))
+if (.not. allocated(P))              allocate(P             (jmax2, kmax2, lmax))
+if (.not. allocated(Cv))             allocate(Cv            (jmax2, kmax2, lmax))
+if (.not. allocated(Eps))            allocate(Eps           (jmax2, kmax2, lmax))
+if (.not. allocated(Poly_constant))  allocate(Poly_constant (jmax2, kmax2, lmax))
 
 end subroutine states_allocate
 
