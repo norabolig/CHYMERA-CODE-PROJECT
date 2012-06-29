@@ -34,7 +34,8 @@ save
  
 !... Scalar variables
 
-real(kreal)  ::  enon         ! ???
+logical      ::  alloc_flag = .FALSE.   ! true if module arrays have been allocated
+real(kreal)  ::  enon                   ! ???
 
 !... Array variables
 
@@ -62,10 +63,16 @@ integer, intent(in) :: jmax2, kmax2, lmax
 
 !... Allocate memory for the variables
 
-if (.not. allocated(P))              allocate(P             (jmax2, kmax2, lmax))
-if (.not. allocated(Cv))             allocate(Cv            (jmax2, kmax2, lmax))
-if (.not. allocated(Eps))            allocate(Eps           (jmax2, kmax2, lmax))
-if (.not. allocated(Poly_constant))  allocate(Poly_constant (jmax2, kmax2, lmax))
+if (alloc_flag) then
+   print *, "states_allocate: ERROR, attempt to allocate state arrays twice. Stopping job."
+   stop
+else
+   allocate(P             (jmax2, kmax2, lmax))
+   allocate(Cv            (jmax2, kmax2, lmax))
+   allocate(Eps           (jmax2, kmax2, lmax))
+   allocate(Poly_constant (jmax2, kmax2, lmax))
+   alloc_flag = .TRUE.
+end if
 
 end subroutine states_allocate
 
@@ -84,10 +91,15 @@ implicit none
 
 !... Initialize the variables
 
-P             = 0.0_kreal
-Cv            = 0.0_kreal
-Eps           = 0.0_kreal
-Poly_constant = 0.0_kreal
+if (alloc_flag) then
+   P             = 0.0_kreal
+   Cv            = 0.0_kreal
+   Eps           = 0.0_kreal
+   Poly_constant = 0.0_kreal
+else
+   print *, "states_allocate: ERROR, attempt to define unallocated state arrays. Stopping job."
+   stop
+end if
 
 end subroutine states_initialize
 
