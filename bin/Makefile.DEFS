@@ -54,19 +54,19 @@
 # DEFAULT DIRECTORIES.  THIS ASSUMES THAT YOU make IN THE
 # DIRECTORY bin
 
- FLUIDDIR  = ../fluid
- POTDIR    = ../pot
- EOSDIR    = ../eos
- RADHYDRO  = ../radhydro
- PARTDIR   = ../particles
- COMMONDIR = ../common
- EXEDIR   ?= ../run
- PATCHDIR ?= ../patch
- FORTRAN_INCLUDE_FILES  ?= ../headers
- C_INCLUDE_FILES  ?= ../headers
+ FLUIDDIR         = ../fluid
+ POTDIR           = ../pot
+ EOSDIR           = ../eos
+ RADHYDRO         = ../radhydro
+ PARTDIR          = ../particles
+ PARAMETERSDIR    = ../parameters
+ EXEDIR          ?= ../run
+ PATCHDIR        ?= ../patch
+ C_INCLUDE_FILES ?= ../headers
+ FORTRAN_INCLUDE_FILES ?= ../headers
  
 # make SEARCHES FOR SOURCE FILES IN THE ORDER LISTED BELOW
- VPATH = $(COMMONDIR):$(PATCHDIR):$(HEADERS):$(RADHYDRO):$(EOSDIR):$(FLUIDDIR):$(POTDIR):\
+ VPATH = $(PARAMETERSDIR):$(PATCHDIR):$(HEADERS):$(RADHYDRO):$(EOSDIR):$(FLUIDDIR):$(POTDIR):\
          $(PARTDIR)
  FINC = -I$(FORTRAN_INCLUDE_FILES)
  CINC = -I$(C_INCLUDE_FILES)
