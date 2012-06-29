@@ -24,6 +24,7 @@
       real*8 rholmt,epslmt,dumlmt,sound,rholmt_p,rhoa
       COMMON /RELIMITS/RHOLMT,EPSLMT,DUMLMT,sound,rholmt_p,rhoa
 
+#if USE_COMMON_GAP==1
       integer jin,itype
       real*8 tmassini,tmassadd,tmassout,tmassacc,mass_star, mdot
       real*8 starphi,tinphi
@@ -31,8 +32,9 @@
      &     tinphi(jmax2,kmax2,lmax),                                    &
      &     tmassini,tmassadd,tmassout,tmassacc, mdot, mass_star,        &
      &     jin,itype
+#endif
 
-
+#if USE_COMMON_EOM==1
       REAL*8 JN,s,t,a,u,w,omega
       COMMON /EOM/                                                      &
      &     S(JMAX2,KMAX2,LMAX),                                         &
@@ -42,20 +44,24 @@
      &     W(JMAX2,KMAX2,LMAX),                                         &
      &     JN(JMAX2,KMAX2,LMAX),                                        &
      &     OMEGA(JMAX2,KMAX2,LMAX)
+#endif
 
+#if USE_COMMON_STATES==1
       real*8 p,cv,eps,poly_constant
-      real*8 phi,rho,rhotot,indirectx,indirecty
       COMMON /STATES/ENON,                                              &
      &     P(JMAX2,KMAX2,LMAX),                                         &
      &     CV(JMAX2,KMAX2,LMAX),                                        &
      &     EPS(JMAX2,KMAX2,LMAX),                                       &
      &     poly_constant(JMAX2,KMAX2,LMAX)
+#endif
 
-
+#if USE_COMMON_POIS==1
+      real*8 phi,rho,rhotot,indirectx,indirecty
       COMMON /POIS/ indirectx,indirecty,                                &
      &   PHI(POT3JMAX2,POT3KMAX2,LMAX),                                 &
      &   RHO(POT3JMAX2,POT3KMAX2,LMAX),                                 &
      &   RHOTOT(POT3JMAX2,POT3KMAX2,LMAX)
+#endif
 
       real*8 Msyscgs,PKcgs,Tconv,Sconv,Dconv,Pconv,sigma,rhoconv,       &
      &       engconv,bkmpcode
@@ -63,6 +69,7 @@
      &     Msyscgs,PKcgs,Tconv,Sconv,                                   &
      &     dconv,Pconv,sigma,rhoconv,engconv,bkmpcode
 
+#if USE_COMMON_AVIS==1
       real*8 qrr,qzz,qtt,hgamma,cs,totheat
       COMMON /AVIS/                                                     &
      &     QRR(JMAX2,KMAX2,LMAX),                                       &
@@ -70,7 +77,9 @@
      &     QTT(JMAX2,KMAX2,LMAX),                                       &
      &     HGAMMA(JMAX2,KMAX2,LMAX),                                    &
      &     CS,totheat
+#endif
 
+#if USE_COMMON_COOLING==1
       real*8 lambda,tau,TempK,TeffK,TphK,Surfcgs,divflux,radflux
       real*8 totcool,totdflux
       COMMON /COOLING/                                                  &
@@ -83,6 +92,7 @@
      &     DIVFLUX(JMAX2,KMAX2,LMAX),                                   &
      &     RADFLUX(JMAX2,KMAX2,LMAX,3),                                 &
      &     totcool,totdflux
+#endif
 
       real*8 Igamma,totirr
       COMMON /IRRAD/                                                    &
@@ -107,8 +117,8 @@
      &     RHF(POT3JMAX2),                                              &
      &     ZHF(POT3KMAX2),                                              &
      &     ROF3N,ZOF3N
-
      
+#if USE_COMMON_INTENSITY
       integer :: KFITA
       real*8 :: temporary,dsdt,sfunc,l_tau_z,dtau_z,                    &
      &          intensity_in_z,intensity_z,ddsdtt,                      &
@@ -124,8 +134,7 @@
      &          ddsdtt(JMAX+2,KMAX+2,LMAX),                             &
      &          int_temp(JMAX+2,KMAX+2,LMAX),                           &
      &          init_int_in(JMAX+2,LMAX)
-
-
+#endif
 
       real*8 :: temptable,engtable,gammatable,muc
       common /engtables/temptable(TTABLE),engtable(TTABLE),             &
