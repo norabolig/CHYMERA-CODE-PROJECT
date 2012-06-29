@@ -64,7 +64,7 @@ integer, intent(in) :: jmax2, kmax2, lmax
 !... Allocate memory for the variables
 
 if (alloc_flag) then
-   print *, "states_allocate: ERROR, attempt to allocate state arrays twice. Stopping job."
+   print *, "ERROR:states_allocate: attempt to allocate states arrays twice. Stopping job."
    stop
 else
    allocate(P             (jmax2, kmax2, lmax))
@@ -97,7 +97,7 @@ if (alloc_flag) then
    Eps           = 0.0_kreal
    Poly_constant = 0.0_kreal
 else
-   print *, "states_allocate: ERROR, attempt to define unallocated state arrays. Stopping job."
+   print *, "ERROR:states_initialize: attempt to define unallocated states arrays. Stopping job."
    stop
 end if
 
