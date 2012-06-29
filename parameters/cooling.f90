@@ -75,7 +75,7 @@ integer, intent(in) :: jmax2, kmax2, lmax
 !... Allocate memory for the variables
 
 if (alloc_flag) then
-   print *, "states_allocate: ERROR, attempt to allocate state arrays twice. Stopping job."
+   print *, "ERROR:cooling_allocate: attempt to allocate cooling arrays twice. Stopping job."
    stop
 else
    allocate(Lambda  (jmax2, kmax2, lmax))
@@ -116,7 +116,7 @@ if (alloc_flag) then
    Divflux = 0.0_kreal
    Radflux = 0.0_kreal
 else
-   print *, "cooling_allocate: ERROR, attempt to define unallocated cooling arrays. Stopping job."
+   print *, "ERROR:cooling_initialize: attempt to define unallocated cooling arrays. Stopping job."
    stop
 end if
 
