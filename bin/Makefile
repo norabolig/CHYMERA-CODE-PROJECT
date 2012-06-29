@@ -18,7 +18,7 @@
   DOPT+=-DNOLIMIT
  endif
 
- OBJ = kinds.o states.o\
+ OBJ = kinds.o avis.o cooling.o eom.o gap.o intensity.o pois.o states.o\
        particle_module.o eos.o 3dhyd-main.o fft.o flux.o\
        housekeeping.o io.o misc.o\
        pot3.o rad.o source.o\
