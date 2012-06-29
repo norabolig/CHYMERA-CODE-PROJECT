@@ -66,7 +66,7 @@ integer, intent(in) :: jmax2, kmax2, lmax
 !... Allocate memory for the variables
 
 if (alloc_flag) then
-   print *, "avis_allocate: ERROR, attempt to allocate avis arrays twice. Stopping job."
+   print *, "ERROR:avis_allocate: attempt to allocate avis arrays twice. Stopping job."
    stop
 else
    allocate(Qrr    (jmax2, kmax2, lmax))
@@ -74,7 +74,7 @@ else
    allocate(Qtt    (jmax2, kmax2, lmax))
    allocate(Hgamma (jmax2, kmax2, lmax))
    alloc_flag = .TRUE.
-endif
+end if
 
 end subroutine avis_allocate
 
@@ -99,7 +99,7 @@ if (alloc_flag) then
    Qtt    = 0.0_kreal
    Hgamma = 0.0_kreal
 else
-   print *, "avis_allocate: ERROR, attempt to define unallocated avis arrays. Stopping job."
+   print *, "ERROR:avis_initialize: attempt to define unallocated avis arrays. Stopping job."
    stop
 end if
 
