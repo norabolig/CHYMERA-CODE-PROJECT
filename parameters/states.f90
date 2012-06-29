@@ -34,14 +34,14 @@ save
  
 !... Scalar variables
 
-real(kind=kreal)  ::  enon         ! ???
+real(kreal)  ::  enon         ! ???
 
 !... Array variables
 
-real(kind=kreal), Dimension(:,:,:), Allocatable  ::  P              ! ???
-real(kind=kreal), Dimension(:,:,:), Allocatable  ::  Cv             ! ???
-real(kind=kreal), Dimension(:,:,:), Allocatable  ::  Eps            ! ???
-real(kind=kreal), Dimension(:,:,:), Allocatable  ::  Poly_constant  ! ???
+real(kreal), dimension(:,:,:), allocatable  ::  P              ! ???
+real(kreal), dimension(:,:,:), allocatable  ::  Cv             ! ???
+real(kreal), dimension(:,:,:), allocatable  ::  Eps            ! ???
+real(kreal), dimension(:,:,:), allocatable  ::  Poly_constant  ! ???
 
 contains
  
