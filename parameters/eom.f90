@@ -68,7 +68,7 @@ integer, intent(in) :: jmax2, kmax2, lmax
 !... Allocate memory for the variables
 
 if (alloc_flag) then
-   print *, "states_allocate: ERROR, attempt to allocate state arrays twice. Stopping job."
+   print *, "ERROR:eom_allocate: attempt to allocate eom arrays twice. Stopping job."
    stop
 else
    allocate(S     (jmax2, kmax2, lmax))
@@ -79,7 +79,7 @@ else
    allocate(JN    (jmax2, kmax2, lmax))
    allocate(Omega (jmax2, kmax2, lmax))
    alloc_flag = .TRUE.
-endif
+end if
 
 end subroutine eom_allocate
 
@@ -107,7 +107,7 @@ if (alloc_flag) then
    JN    = 0.0_kreal
    OMEGA = 0.0_kreal
 else
-   print *, "states_allocate: ERROR, attempt to define unallocated state arrays. Stopping job."
+   print *, "ERROR:eom_initialize: attempt to define unallocated eom arrays. Stopping job."
    stop
 end if
 
