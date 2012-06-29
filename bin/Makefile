@@ -8,7 +8,7 @@
  DOPT = -DPASSIVE=$(PASSIVE) -DVERBOSE=$(VERBOSE) -DPASSIVE_INIT=$(PASSIVE_INIT) -DFLUID=$(FLUID)\
         -DWIGGLE=$(WIGGLE) -DEXTERNAL_POT=$(EXTERNAL_POT) -DFLUID_RESTART=$(FLUID_RESTART)\
         -DWIGGLE_RESTART=$(WIGGLE_RESTART) -DSELFGRAVITY=$(SELFGRAVITY) -DINDIRECT=$(INDIRECT)\
-        -DPARTICLE=$(PARTICLE) -DBINARY=$(BINARY)\
+        -DPARTICLE=$(PARTICLE) -DBINARY=$(BINARY) -DPARAMETERSDIR=$(PARAMETERSDIR)\
         -DUSE_COMMON_AVIS=$(USE_COMMON_AVIS) -DUSE_COMMON_COOLING=$(USE_COMMON_COOLING)\
         -DUSE_COMMON_EOM=$(USE_COMMON_EOM) -DUSE_COMMON_GAP=$(USE_COMMON_GAP)\
         -DUSE_COMMON_INTENSITY=$(USE_COMMON_INTENSITY) -DUSE_COMMON_POIS=$(USE_COMMON_POIS)\
@@ -18,7 +18,8 @@
   DOPT+=-DNOLIMIT
  endif
 
- OBJ = particle_module.o eos.o 3dhyd-main.o fft.o flux.o\
+ OBJ = kinds.o states.o\
+       particle_module.o eos.o 3dhyd-main.o fft.o flux.o\
        housekeeping.o io.o misc.o\
        pot3.o rad.o source.o\
        state.o boundary.o blktri.o\
@@ -121,6 +122,9 @@ boundary.o: boundary.f
 	$(FC) $(CFLAGS) $(FOPT) $(FFREE) $(FINC) -c $<
 
 %.o:%.F
+	$(FC) $(CFLAGS) $(FOPT) $(FFIXED) $(FINC) -c $<
+
+%.o:%.F90
 	$(FC) $(CFLAGS) $(FOPT) $(FFREE) $(FINC) -c $<
 
 interp.o: interp.c
