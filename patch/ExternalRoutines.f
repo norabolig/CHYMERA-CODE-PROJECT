@@ -1,15 +1,16 @@
 !!!BASIC UTILITIES
       module utilities
+      use kinds, only : kreal
       implicit none
-      real*8,parameter::tol_kep=1d-3
+      real(kreal),parameter::tol_kep=1d-3
        
       contains
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! This is essentially atan2, but with some additional control for arg=0,0
-      real*8 function getAngle(x,y) 
-       real*8,parameter::pi=3.141592653589793d0
-       real*8,intent(in):: x,y
+      real(kreal) function getAngle(x,y) 
+       real(kreal),parameter::pi=3.141592653589793d0
+       real(kreal),intent(in):: x,y
        if(x==0d0)then
         if(y==0d0)then
           getAngle=0d0
@@ -39,8 +40,8 @@
       ! radial part of Kepler
       !!!!!!!!!!!!!!!!!!!!!!!
 
-      real*8 function radialCoorKep(a,ee,eAnom)
-       real*8,intent(in)::a,ee,eAnom
+      real(kreal) function radialCoorKep(a,ee,eAnom)
+       real(kreal),intent(in)::a,ee,eAnom
        radialCoorKep=a*(1d0-ee**2)/(1d0+ee*cos(eAnom))
        return
       end function radialCoorKep
@@ -52,10 +53,11 @@
       !!!!!!!!!!!!!!!!!!!!!!!! 
 
       subroutine trueAnomaly(time,mu,a,ee,theta,eAnom)
-       real*8,parameter::pi=3.141592653589793d0
-       real*8,intent(in)::time,mu,a,ee
-       real*8,intent(out)::theta,eAnom
-       real*8::r,calc,errMag,err,orbits,val
+       use kinds, only : kreal
+       real(kreal),parameter::pi=3.141592653589793d0
+       real(kreal),intent(in)::time,mu,a,ee
+       real(kreal),intent(out)::theta,eAnom
+       real(kreal)::r,calc,errMag,err,orbits,val
 
        val=time*sqrt(mu/a**3)
        orbits=dble(int(val/(2.d0*pi)))
@@ -90,14 +92,17 @@
 !!! we are still in mirror symmetry land for the disk. 
       subroutine getBinaryPosition(tBin,rBin,thetaBin,omegaBin,
      &  massDisk,muBin)
+
+      use gap, only : mass_star
       use utilities
+
       implicit none
 #include "hydroparam.h"
 #include "units.h"
 #include "globals.h"
-      real*8,intent(in)::tBin,massDisk
-      real*8,intent(out)::rBin,thetaBin,omegaBin,muBin
-      real*8::eAnom
+      real(kreal),intent(in)::tBin,massDisk
+      real(kreal),intent(out)::rBin,thetaBin,omegaBin,muBin
+      real(kreal)::eAnom
 
 ! Currently set up for Roche potential in a rotating frame
 
@@ -119,13 +124,20 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !! THIS IS AN ACCRETION ROUTINE
       subroutine TsigConstant(tmass)
+
+      use kinds,  only : kreal
+      use eom,    only : T, A
+      use gap,    only : mass_star
+      use pois,   only : rho
+      use states, only : eps
+
       implicit none
 #include "hydroparam.h"
 #include "units.h"
 #include "globals.h"
       integer::J,K,L
       integer::JRIN=32,JROUT=152
-      real*8::limiter,grow,ran4,nrho,madd,avgNrho,madd1,tmass
+      real(kreal)::limiter,grow,ran4,nrho,madd,avgNrho,madd1,tmass
       limiter=den*phylim
 
 ! this is stupid, but I am keeping it in for stupid reasons.  
@@ -183,16 +195,21 @@
 ! radiative cooling routine.  Very simple and easy.  Don't fool yourself
 ! into thinking this is terribly accurate. It gets the job done, and it is stable.
 ! Note that ttenv is user specified.
-      use eos, only : get_gamma_from_tk
+      use kinds,   only : kreal
+      use cooling, only : TempK, tau, divflux
+      use eos,     only : get_gamma_from_tk
+      use gap,     only : mdot, tmassacc
+      use pois,    only : rho
+      use states,  only : eps
       implicit none
 #include "hydroparam.h"
 #include "units.h"
 #include "globals.h"
       integer::J,K,L
-      real*8::limiter,dtau,area,volume,tau_fac,coolTime,etenv
-      real*8::ttenv,opacfac,fluxfac,ds,tacc,mmw,gam
+      real(kreal)::limiter,dtau,area,volume,tau_fac,coolTime,etenv
+      real(kreal)::ttenv,opacfac,fluxfac,ds,tacc,mmw,gam
 
-      REAL*8 Oross(jmax2,kmax2,lmax),Oplck(jmax2,kmax2,lmax)
+      real(kreal) Oross(jmax2,kmax2,lmax),Oplck(jmax2,kmax2,lmax)
      &     ,Oabs(jmax2,kmax2,lmax),Otot(jmax2,kmax2,lmax),
      &      oplck_env(JMAX2,KMAX2,LMAX),sum
 
