@@ -1,23 +1,35 @@
 # makefile for the 3-D astrophysical hydrodynamics code.
 
- F95        = ifort 
- OMPF95     = ifort -openmp -threads -fpp -mcmodel medium -shared-intel
- PREPROCESSOR = -fpp
+ F95     = ifort 
+ PREPROC = -fpp
+
+ OMPF95  = $(F95) $(PREPROC)
+ 
+## Add OpenMP flags
+ OMPF95 += -openmp -threads
+
+## used for stack space exploration, may affect performance
+# OMPF95 += -mcmodel medium -shared-intel
+
+## set this variable for debugging
+# DEBUG_OPTS = -g -save-temps -fpic -Wl,-no_pie
+
+## improved error checking if used
+# ERROR_CHK = -traceback -check bounds
 
  CFLAGS = 
+ LFLAGS = $(DEBUG_OPTS)
  TARCH  = 
 
  ifeq ($(FLUID),1)
-   LFLAGS= -L/home/itp/acboley/lib64/lib -l gsl -l gslcblas
-   CINC += -I/home/itp/acboley/lib64/include
- else
-   LFAGS=
+   LFLAGS += -L/home/itp/acboley/lib64/lib -l gsl -l gslcblas
+   CINC   += -I/home/itp/acboley/lib64/include
  endif
 
- FOPT       = -r8 -O3 -align -pad -check
+ FOPT       = -r8 -O3 $(DEBUG_OPTS) $(ERROR_CHK) -align -pad -check
  CONSERVEOPT= -r8 -align -pad -check
 
- FFREE = -free
+ FFREE  = -free
  FFIXED = -fixed
 
  CC = icc
