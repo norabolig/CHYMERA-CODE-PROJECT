@@ -1,5 +1,15 @@
       subroutine Hybrid()
-      use eos, only: get_gamma2,get_gamma_from_tk
+
+      use cooling,   only : tau, tempk, divflux, radflux, teffk
+      use cooling,   only : totdflux
+      use pois,      only : rho
+      use gap,       only : mdot, tmassacc
+      use intensity, only : l_tau_z, init_int_in, kfita, dtau_z
+      use intensity, only : temporary, intensity_z, int_temp
+      use intensity, only : intensity_in_z, sfunc, dsdt, ddsdtt
+      use states,    only : eps
+      use eos,       only : get_gamma2,get_gamma_from_tk
+
       implicit none
 #include "hydroparam.h"
 #include "globals.h"
