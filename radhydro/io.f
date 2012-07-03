@@ -3,6 +3,11 @@ C***********************************************************************
       SUBROUTINE SETUP(ITSTRT,ITSTOP,IDIAG,ISOADI,ISTOR,ITSTEP,
      &                 ISYM,MAXTRM)
       use eos
+
+      use eom,    only : s, t, a, u, w, jn, omega
+      use pois,   only : rho
+      use states, only : p, eps, cv
+
 #if PARTICLE>0
       use particle
       implicit real*8(a-h,o-z)
@@ -1393,6 +1398,13 @@ C***********************************************************************
 
       SUBROUTINE RITE(IWHAT,IHEAD,  JST,JSP,JSK,  KST,KSP,KSK,
      &                LST,LSP,LSK)
+
+      use cooling, only : Tau
+      use eom,     only : S, T, A, U, W, Jn, Omega
+      use gap,     only : Starphi, Tinphi
+      use pois,    only : Rho, Phi
+      use states,  only : Eps, P
+
       IMPLICIT real*8 (a-h,o-z)      
 
 #include "hydroparam.h"
@@ -1901,6 +1913,9 @@ C***********************************************************************
 
 C***********************************************************************
       subroutine cyl3d
+
+      use pois, only : Rho
+
       IMPLICIT real*8 (a-h,o-z)
 
 #include "hydroparam.h"
