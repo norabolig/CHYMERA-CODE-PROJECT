@@ -4,11 +4,20 @@ C
 C...VISCOSITY COEFFICIENTS
 C
       SUBROUTINE AVISC
-      implicit real*8(a-h,o-z)
+
+      use kinds, only : kreal
+      use avis,  only : Qrr, Qzz, Qtt
+      use eom,   only : U, W, Omega
+      use pois,  only : Rho
+
+      implicit none
+
 #include "hydroparam.h"
 #include "globals.h"
 #include "units.h"
-      integer jstart
+
+      real(kreal) :: delvt, delvz, delvr, dr, dz, rholmtav
+      integer     :: j, k, l, lm, lp, jstart
 
       DR=ROF3N
       DZ=ZOF3N
