@@ -1,4 +1,5 @@
       module particle
+
       implicit none
 #include  "units.h"
 #include "hydroparam.h"
@@ -98,6 +99,8 @@
 
       subroutine set_particle_vel()
 
+      use pois, only : phi, rho
+
       integer::thisj,thisk,thisllow,thislhi,thisl,I
       real*8::tmp,ran4,mag,r_p,angle_p,vr_p,omega_p
   
@@ -139,6 +142,8 @@
 
 
       subroutine initialize_particles() 
+
+      use pois, only : rho
 
       integer::SEED
       integer*8::N,NF,J,K,L,I,ITER,NSTART
@@ -249,6 +254,9 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
       subroutine update_particle_vel(dt)
+
+      use gap,  only : mass_star, starphi
+      use pois, only : rho, phi
 
       integer::thisJ,thisK,thisLlow,thisLhi,thisL,I,J,K,L
       real*8::dt,frbottom,frtop,fzbottom,fztop,fabottom,fatop
@@ -402,6 +410,8 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
       subroutine set_particle_density()
+
+      use pois, only : rho, rhotot
 
       integer::thisj,thisk,thisL,I
       real*8::r_p,angle_p
@@ -603,6 +613,10 @@
 
       subroutine account_for_drag(dt)
      
+      use cooling, only : tempk
+      use eom,     only : a, s, t, omega, jn
+      use pois,    only : rho, rhotot
+
       integer:: I,thisj,thisk,thisl,thisLlow,thisLhi
 
       real*8::kn,oldTotmom,oldGasmom,Gasmom,ftop,fbottom
