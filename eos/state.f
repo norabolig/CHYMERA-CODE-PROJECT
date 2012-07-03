@@ -1,5 +1,10 @@
       subroutine State() ! this routine calculates the pressure
+        use kinds,   only : kreal
+        use cooling, only : TempK
+        use pois,    only : rho
+        use states,  only : eps, P
         use eos
+
         implicit none
      
 #include "hydroparam.h"
@@ -7,7 +12,7 @@
 #include "units.h"
 
         integer JSTART,J,K,L
-        real*8::mu
+        real(kreal) :: mu
 
         if (jmin.gt.2) then
            jstart=jmin2
