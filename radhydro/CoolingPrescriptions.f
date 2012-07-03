@@ -1,4 +1,9 @@
       subroutine ConstantTcool()
+
+      use cooling, only : TempK, TeffK, TphK, lambda, tau
+      use pois,    only : rho
+      use states,  only : eps
+
       implicit none
 #include "hydroparam.h"
 #include "units.h"
@@ -56,6 +61,12 @@ C     Weighted average for photospheric temperature (at tau=2/3)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
       subroutine TcoolOmega()
+
+      use cooling, only : TeffK, Lambda
+      use eom,     only : omega
+      use pois,    only : rho
+      use states,  only : eps
+
       implicit none
 #include "hydroparam.h"
 #include "units.h"
