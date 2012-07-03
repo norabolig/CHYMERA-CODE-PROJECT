@@ -1,11 +1,16 @@
       subroutine ExternalPot()
+
+      use kinds, only : kreal
+      use gap,   only : starphi, mass_star, tmassacc
+      use pois,  only : rho, phi, indirectx, indirecty
+
       implicit none
 #include "hydroparam.h"
 #include "globals.h"
 #include "units.h"
       integer::J,K,L
-      real*8::thisMass,omegaBin2,rcom,theta,x,y
-      real*8::rBin,thetaBin,thisTime,omegaBin,massDisk,muMass,rdist
+      real(kreal)::thisMass,omegaBin2,rcom,theta,x,y
+      real(kreal)::rBin,thetaBin,thisTime,omegaBin,massDisk,muMass,rdist
 
       thisTime=time
 
@@ -75,14 +80,19 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       subroutine ExternalPotInit() ! this should be obsolete now
+
+      use kinds, only : kreal
+      use gap,   only : starphi, mass_star, tmassacc
+      use pois,  only : rho, phi, indirectx, indirecty
+
       implicit none
 #include "hydroparam.h"
 #include "globals.h"
 #include "units.h"
 
-      real*8::rBin,thetaBin,thisTime,omegaBin,massDisk,muMass,theta
+      real(kreal)::rBin,thetaBin,thisTime,omegaBin,massDisk,muMass,theta
       integer::J,K,L
-      real*8::thisMass,omegaBin2,rcom,x,y,rdist
+      real(kreal)::thisMass,omegaBin2,rcom,x,y,rdist
 
 #if BINARY>0
       call getBinaryPosition(thisTime,rBin,thetaBin,omegaBin,
