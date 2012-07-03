@@ -1,4 +1,12 @@
       SUBROUTINE RADTRANS
+
+      use avis,      only : Hgamma
+      use cooling,   only : Lambda, Tau, TeffK, TphK, Surfcgs
+      use cooling,   only : TempK, Radflux, Divflux
+      use intensity, only : l_tau_z
+      use pois,      only : Rho
+      use states,    only : P, Eps
+
       IMPLICIT real*8 (a-h,o-z)      
 #include "hydroparam.h"
 #include "globals.h"
@@ -923,11 +931,17 @@ c
       SUBROUTINE HEIGHTS ! THIS IS KEPT HERE FOR BONUS POINTS.
           ! IF YOU FIND IT, YOU GET THE ARCHAEOLOGY AWARD.
       
-      IMPLICIT real*8 (a-h,o-z)
+      use kinds,   only : kreal
+      use pois,    only : Rho
+      use cooling, only : Tau
+
+      implicit none
 #include "hydroparam.h"
 #include "globals.h"
 #include "units.h"
-      real*8 limiter
+      real(kreal) :: limiter
+      integer     :: j, k
+
       limiter = den*phylim 
       do j=2,jmax
          do k=2,kmax
@@ -956,14 +970,19 @@ C      enddo
                             ! from the temperature table temptable, which is 
                             ! calculated in setup based on X, Y, Z composition
                             ! and other assumptions.
+
+         use kinds,   only : kreal
+         use cooling, only : TempK
+         use pois,    only : rho
+         use states,  only : eps
          implicit none
 #include "hydroparam.h"
 #include "globals.h"
 #include "units.h"
         
-         integer J,K,L,I 
-         real*8 limiter
-         real*8 eng,dummy
+         integer :: J,K,L,I 
+         real(kreal) :: limiter
+         real(kreal) :: eng,dummy
 
          limiter = den*phylim 
 
