@@ -74,7 +74,24 @@ c     *lowresrandom: low resolution random pert. (io.f)
 !     *Particle routines: see particle_module
 C***********************************************************************
 C     
+      use avis,    only : Hgamma
+      use cooling, only : TempK, Lambda, Tau, TeffK, Divflux, Radflux
+      use cooling, only : TphK
+      use eom,     only : S, T, A, Omega
+      use states,  only : Eps
+      use pois,    only : Rho, Phi
+      use passive, only : SS, TT, AA, Rrho, Eeps
       use eos
+
+      use avis,      only : avis_allocate
+      use cooling,   only : cooling_allocate
+      use eom,       only : eom_allocate
+      use gap,       only : gap_allocate
+      use intensity, only : intensity_allocate
+      use passive,   only : passive_allocate
+      use pois,      only : pois_allocate
+      use states,    only : states_allocate
+
 #if PARTICLE>0
       use particle
       implicit real*8(a-h,o-z)
@@ -98,20 +115,23 @@ C The following arrays are local to the main program, and should not need
 C to be placed in common. However, some systems may try to put them on the
 C stack, which may result in stack overflow. Putting them in a common block
 C guarantees they will go on the heap. ! COMMON BLOCK REMOVED. ACB
-#if PASSIVE>0
-      REAL*8 SS(JMAX2,KMAX2,LMAX),
-     &       TT(JMAX2,KMAX2,LMAX),
-     &       AA(JMAX2,KMAX2,LMAX),
-     &       RRHO(JMAX2,KMAX2,LMAX),
-     &       EEPS(JMAX2,KMAX2,LMAX),
-     &       PPASSFLUX(JMAX2,KMAX2,LMAX,PAS)
-#else
-      REAL*8 SS(JMAX2,KMAX2,LMAX),
-     &       TT(JMAX2,KMAX2,LMAX),
-     &       AA(JMAX2,KMAX2,LMAX),
-     &       RRHO(JMAX2,KMAX2,LMAX),
-     &       EEPS(JMAX2,KMAX2,LMAX)
-#endif
+!
+! Rasmussen(2012-6-24): Variables moved to passive module
+!
+C#if PASSIVE>0
+C      REAL*8 SS(JMAX2,KMAX2,LMAX),
+C     &       TT(JMAX2,KMAX2,LMAX),
+C     &       AA(JMAX2,KMAX2,LMAX),
+C     &       RRHO(JMAX2,KMAX2,LMAX),
+C     &       EEPS(JMAX2,KMAX2,LMAX),
+C     &       PPASSFLUX(JMAX2,KMAX2,LMAX,PAS)
+C#else
+C      REAL*8 SS(JMAX2,KMAX2,LMAX),
+C     &       TT(JMAX2,KMAX2,LMAX),
+C     &       AA(JMAX2,KMAX2,LMAX),
+C     &       RRHO(JMAX2,KMAX2,LMAX),
+C     &       EEPS(JMAX2,KMAX2,LMAX)
+C#endif
 
       CHARACTER  tim*6,rhofile*80,tempfile*80,starfile*80,
      &           restart_star*80
@@ -130,6 +150,16 @@ C guarantees they will go on the heap. ! COMMON BLOCK REMOVED. ACB
       logical, save::kick_switch=.false.
       COMMON /COOLINGSHARED/Oross,Oplck,Oabs,Otot,sum
 
+      call avis_allocate      (jmax2, kmax2, lmax)
+      call cooling_allocate   (jmax2, kmax2, lmax)
+      call eom_allocate       (jmax2, kmax2, lmax)
+      call gap_allocate       (jmax2, kmax2, lmax)
+      call intensity_allocate (jmax2, kmax2, lmax)
+      call states_allocate    (jmax2, kmax2, lmax)
+#if PASSIVE>0
+      call passive_allocate   (jmax2, kmax2, lmax, pas)
+#endif
+      call pois_allocate      (pot3jmax2, pot3kmax2, lmax)
 !
 ! FIRST TOUCH: INITIALIZE ALL ARRAYS.  THIS IS NOT ONLY GOOD PRACTICE, BUT
 ! IT CAN SIGNICANTLY SPEED UP THE OPENMP CODE.  THE ARRAYS ARE MORE 
@@ -840,8 +870,24 @@ C.........Run Diagnostics Follow.........C
 !
 !     touch every field array  to organize data placement
 !
+      use gap,       only : starphi, tinphi
+      use eom,       only : S, T, A, U, W, JN, Omega
+      use states,    only : Eps, P, Cv
+      use pois,      only : Phi, Rho
+      use avis,      only : Qrr, Qzz, Qtt, Hgamma
+      use cooling,   only : Lambda, Tau, TempK, TeffK, Divflux, Radflux
+      use cooling,   only : TphK, Surfcgs
+      use intensity, only : Temporary, Dsdt, Sfunc, L_tau_z, Dtau_z
+      use intensity, only : Intensity_in_z, Intensity_z, Ddsdtt
+      use intensity, only : Int_temp, Init_int_in, Kfita
+
+      implicit none
+
 #include "hydroparam.h"
 #include "globals.h"
+
+      integer :: I, J, L, K
+
 !
 !$OMP PARALLEL DEFAULT(SHARED)
 !$OMP DO SCHEDULE(STATIC)
