@@ -1,7 +1,16 @@
 C***********************************************************************
 C   LIMIT THE VELOCITIES
       SUBROUTINE VLIMIT
-      IMPLICIT real*8 (a-h,o-z)
+
+      use kinds, only : kreal
+      use eom,   only : S, T, A, U, W, Jn, Omega
+      use pois,  only : Rho
+
+      implicit none
+
+      integer :: j, k, l
+      real(kreal) :: vlim
+
 #include "hydroparam.h"
 #include "globals.h"
       integer jstart
@@ -38,7 +47,19 @@ C   LIMIT THE VELOCITIES
 
 C***********************************************************************
       SUBROUTINE DELTA(TINFO)
-      IMPLICIT real*8 (a-h,o-z)
+      use kinds,  only : kreal
+      use avis,   only : Qrr, Qzz, Qtt
+      use eom,    only : U, W, Jn
+      use pois,   only : Rho
+      use states, only : P
+
+      implicit none
+
+      integer     :: j, k, l, indx, isoadi
+      real(kreal) :: allow, dmax, dmaxo, delt1, delt2, delt3
+      real(kreal) :: f1, f2, chgmax, chgmaxn, speed1
+      real(kreal) :: speed2, speed3, speed4, speed5, speed6, speed7
+
 #include "hydroparam.h"
 #include "globals.h"
       logical TINFO
@@ -190,6 +211,12 @@ c     IF(AMINQ.LT.AMIN) WRITE(3,100) DELT,J1,K1,L1,SP,ALLOW,F1,F2,CHGMAX
 
 C***********************************************************************
       SUBROUTINE CLEANUP
+
+      use gap,    only : tmassadd
+      use eom,    only : s, t, a
+      use pois,   only : rho
+      use states, only : eps
+
       IMPLICIT real*8 (a-h,o-z)
 #include "hydroparam.h"
 #include "globals.h"
@@ -356,10 +383,17 @@ C.....Set quantities below the equatorial plane.
 
 C***********************************************************************
       SUBROUTINE CENTMASS(DISP)
-      IMPLICIT real*8 (a-h,o-z)
+      use kinds, only : kreal
+      use pois,  only : Rho
+
+      implicit none
+
+      integer :: j, l, k
+
 #include "hydroparam.h"
 #include "globals.h"
-      real*8 THETA(lmax+1)
+      real(kreal) :: alf, alfa, disp, rm, x, y, cm
+      real(kreal) :: Theta(lmax+1)            ! allocated on stack
 !$OMP PARALLEL DEFAULT(SHARED) PRIVATE(RM,K,J,L)                        &
 !$OMP&  SHARED(CM,Y,X,DTHETA)
 !$OMP DO SCHEDULE(STATIC)
@@ -413,6 +447,10 @@ C***********************************************************************
 
 C***********************************************************************
       SUBROUTINE CLEARUP
+
+      use pois,   only : rho
+      use states, only : eps
+
       IMPLICIT real*8 (a-h,o-z)
 #include "hydroparam.h"
 #include "globals.h"
