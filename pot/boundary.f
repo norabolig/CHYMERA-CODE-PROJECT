@@ -86,6 +86,9 @@ C  Finally, along the outside vertical edge:
 C**********************************************************************
 
       SUBROUTINE BDYGEN(MAXTRM,ISYM,REDGE)                              
+
+      use pois, only : Rho, Phi
+
 Cxxx NB:  as presently written the code must be linked with:
 C      f77 -mp boundary.o -Wl,Xlocal,terms_
       
