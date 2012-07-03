@@ -102,7 +102,7 @@ target: $(OBJ)
 dummy:
 
 clean:
-	-rm -f *.o *.mod
+	-rm -f *.o *.mod *.i *i90
 
 realclean:
 	-rm -f *.o *.mod *.lst chymera-omp chymera-ser
