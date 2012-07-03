@@ -28,6 +28,7 @@ C***********************************************************************
       integer OMP_GET_MAX_THREADS
 
       character::date_date*8,date_time*10,date_zone*5
+      character(len=128) :: err_msg
 
       real*8 limiter
 
@@ -354,7 +355,15 @@ c...  Standard read in .........................................................
 
          IF (ITYPE.EQ.1.OR.ITYPE.EQ.98) THEN
             
-            OPEN(UNIT=7,FILE='fort.7',FORM='UNFORMATTED',STATUS='OLD')
+            OPEN(UNIT=7,FILE='fort.7',FORM='UNFORMATTED',STATUS='OLD',
+     &           IOSTAT=ios, IOMSG=err_msg)
+            if (ios /= 0) then
+               print *
+               print *, "SETUP: ERROR opening file fort.7, stopping run"
+               print *, err_msg
+               stop
+            end if
+
             WRITE(6,10200) ITYPE,'.'
             read(7) S
             read(7) T
