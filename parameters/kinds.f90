@@ -17,7 +17,7 @@ save
 
 public
 
-integer, parameter :: kreal = kind(1.0D)  ! double precision
+integer, parameter :: kreal = kind(1.0D0)  ! double precision
 
 !------------------------------------------------------------------------------
 
