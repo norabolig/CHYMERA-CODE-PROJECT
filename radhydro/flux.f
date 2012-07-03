@@ -34,10 +34,19 @@ c*******************************************************************************
 #else
       SUBROUTINE FLUX(SS,TT,AA,RRHO,EEPS)
 #endif
-      IMPLICIT real*8 (a-h,o-z)      
+      use kinds,  only : kreal
+      use gap,    only : tmassadd
+      use eom,    only : S, T, A, U, W, Omega
+      use pois,   only : Rho
+      use states, only : Eps
+
+      implicit none
 #include "hydroparam.h"
 #include "globals.h"
       
+      procedure() :: slope, vli
+      real(kreal) :: dr, dz, rdm, rdp, rdtheta, xt, slope, vli
+
 #if PASSIVE>0
       REAL*8 SS(JMAX2,KMAX2,LMAX),
      &       TT(JMAX2,KMAX2,LMAX),
@@ -52,7 +61,6 @@ c*******************************************************************************
      &       RRHO(JMAX2,KMAX2,LMAX),
      &       EEPS(JMAX2,KMAX2,LMAX)
 #endif
-
 
 C The following arrays are local to subroutine flux, and should not need 
 C to be placed in common. But the OpenMP version of the code may fail unless 
