@@ -1,13 +1,18 @@
 C***********************************************************************
       SUBROUTINE VELOCITY
-      IMPLICIT real*8 (a-h,o-z)
+
+      use kinds, only : kreal
+      use eom,   only : S, T, A, U, W, Jn, Omega
+      use pois,  only : Rho
+
+      implicit none
 
 #include "units.h"
 #include "hydroparam.h"
 #include "globals.h"
-      real*8 rhox(kmax2)
+      real(kreal) rhox(kmax2)
       save rhox
-      integer jstart,LP,K
+      integer jstart,LP,L,J,K
 
 C...FROM MOMENTA FIND VELOCITIES
 
