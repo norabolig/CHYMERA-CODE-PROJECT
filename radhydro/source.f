@@ -1,5 +1,11 @@
       SUBROUTINE SOURCE
+      use avis,    only : Hgamma, Qrr, Qzz, Qtt
+      use cooling, only : Tau, Divflux, Lambda, Radflux
+      use eom,     only : S, T, A, U, W, Omega
+      use pois,    only : Rho, Phi
+      use states,  only : P, Eps
       use eos
+
       IMPLICIT real*8 (a-h,o-z)      
 
 #include "hydroparam.h"
