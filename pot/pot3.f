@@ -13,6 +13,9 @@ C*******************************************************************************
 
 
       SUBROUTINE POT3(NPOINT,IPRINT)
+
+      use pois, only : Phi, Rho
+
       IMPLICIT real*8 (a-h,o-z)      
 
 #include "hydroparam.h"
@@ -309,6 +312,9 @@ C$OMP END PARALLEL
 c*******************************************************************************
 
       SUBROUTINE ZAXPHI(NPOINT,IPRINT)
+
+      use pois, only : Phi
+
       IMPLICIT real*8 (a-h,o-z)      
 
 #include "hydroparam.h"
