@@ -1,5 +1,10 @@
 C***********************************************************************
       SUBROUTINE RAD(I)
+
+      use eom,    only : S, T, A
+      use pois,   only : Rho
+      use states, only : P, Cv, Eps
+
       IMPLICIT real*8 (a-h,o-z)
 #include "hydroparam.h"
 #include "globals.h"
