@@ -1,6 +1,8 @@
-## compiled object and module files
+## compiled object, module files, and other compiler junk
 #
 *.o
+*.i
+*.i90
 *.mod
 
 ## binaries
