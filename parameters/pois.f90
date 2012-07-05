@@ -82,6 +82,7 @@ subroutine pois_initialize
 ! Subroutine pois_initialize initializes the pois variables.
 !
 !=======================================================================
+use constants, only: zero
  
 implicit none
 
@@ -90,9 +91,9 @@ implicit none
 !... Initialize the variables
 
 if (alloc_flag) then
-   Phi    = 0.0_kreal
-   Rho    = 0.0_kreal
-   Rhotot = 0.0_kreal
+   Phi    = zero
+   Rho    = zero
+   Rhotot = zero
 else
    print *, "ERROR:pois_initialize: attempt to define unallocated pois arrays. Stopping job."
    stop
