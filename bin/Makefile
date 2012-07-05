@@ -18,9 +18,9 @@
   DOPT+=-DNOLIMIT
  endif
 
- OBJ = kinds.o avis.o cooling.o eom.o gap.o intensity.o pois.o states.o\
-       passive_module.o particle_module.o eos.o 3dhyd-main.o fft.o flux.o\
-       housekeeping.o io.o misc.o\
+ OBJ = kinds.o constants.o avis.o cooling.o eom.o gap.o intensity.o pois.o\
+       states.o passive_module.o particle_module.o eos.o 3dhyd-main.o\
+       fft.o flux.o housekeeping.o io.o misc.o\
        pot3.o rad.o source.o\
        state.o boundary.o blktri.o\
        avisc.o hybrid.o \
