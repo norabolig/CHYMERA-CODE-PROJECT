@@ -10,10 +10,7 @@ save
 public
 
 !... Physical constants
-real(kreal), parameter :: gcgs    = 6.67d-8
 real(kreal), parameter :: msun    = 1.989d33
-real(kreal), parameter :: rgasCGS = 8.254d7
-real(kreal), parameter :: mp      = 1.67d-24
 real(kreal), parameter :: pi      = 3.1415926535897931d0
 
 !... Natural numbers
@@ -32,6 +29,7 @@ real(kreal), parameter :: ten   = 10.0d0
 !... Fractions
 real(kreal), parameter :: half    = (one/two)
 real(kreal), parameter :: third   = (one/three)
+real(kreal), parameter :: twothree= (two/three)
 real(kreal), parameter :: quarter = (one/four)
 real(kreal), parameter :: sixth   = (one/six)
 real(kreal), parameter :: tenth   = (one/ten)
