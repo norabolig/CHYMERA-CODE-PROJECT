@@ -50,7 +50,7 @@ real(kreal), dimension(:,:,:), allocatable  ::  Omega   ! ???
 
 contains
  
-subroutine eom_allocate(jmax2, kmax2, lmax)
+subroutine eom_allocate
 !=======================================================================
 ! 
 !    eom_allocate
@@ -58,10 +58,9 @@ subroutine eom_allocate(jmax2, kmax2, lmax)
 ! Subroutine eom_allocate allocates the eom variables.
 !
 !=======================================================================
+use hydroparams, only : jmax2, kmax2, lmax
  
 implicit none
-
-integer, intent(in) :: jmax2, kmax2, lmax
 
 !---------------------------------------------------------------------
 
