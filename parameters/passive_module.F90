@@ -53,7 +53,7 @@ real(kreal), dimension(:,:,:,:), allocatable  ::  Ppassflux ! ???
 
 contains
  
-subroutine passive_allocate(jmax2, kmax2, lmax, pas)
+subroutine passive_allocate
 !=======================================================================
 ! 
 !    passive_allocate
@@ -61,10 +61,9 @@ subroutine passive_allocate(jmax2, kmax2, lmax, pas)
 ! Subroutine passive_allocate allocates the passive variables.
 !
 !=======================================================================
+use hydroparams, only : jmax2, kmax2, lmax, pas
  
 implicit none
-
-integer, intent(in) :: jmax2, kmax2, lmax, pas
 
 !---------------------------------------------------------------------
 
@@ -81,7 +80,7 @@ else
    allocate(Eeps     (jmax2, kmax2, lmax))
 #if PASSIVE>0
    allocate(Ppassflux(jmax2, kmax2, lmax, pas))
-#endif   allocate(Qrr    (jmax2, kmax2, lmax))
+#endif
    alloc_flag = .TRUE.
 end if
 
@@ -95,7 +94,7 @@ subroutine passive_initialize
 ! Subroutine passive_initialize initializes the passive variables.
 !
 !=======================================================================
- 
+use constants, only : zero 
 implicit none
 
 !---------------------------------------------------------------------
@@ -103,11 +102,11 @@ implicit none
 !... Initialize the variables
 
 if (alloc_flag) then
-   SS   = 0.0_kreal
-   TT   = 0.0_kreal
-   AA   = 0.0_kreal
-   Rrho = 0.0_kreal
-   Eeps = 0.0_kreal
+   SS   = zero
+   TT   = zero
+   AA   = zero
+   Rrho = zero
+   Eeps = zero
    if (allocated(Ppassflux)) Ppassflux = 0.0_kreal
 else
    print *, "ERROR:passive_initialize: attempt to define unallocated passive arrays. Stopping job."
