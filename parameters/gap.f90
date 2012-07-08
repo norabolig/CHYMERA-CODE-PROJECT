@@ -53,7 +53,7 @@ real(kreal), dimension(:,:,:), allocatable  ::  tinphi     ! ???
 
 contains
  
-subroutine gap_allocate(jmax2, kmax2, lmax)
+subroutine gap_allocate
 !=======================================================================
 ! 
 !    gap_allocate
@@ -61,10 +61,9 @@ subroutine gap_allocate(jmax2, kmax2, lmax)
 ! Subroutine gap_allocate allocates the GAP variables.
 !
 !=======================================================================
+use hydroparams, only : jmax2, kmax2, lmax
  
 implicit none
-
-integer, intent(in) :: jmax2, kmax2, lmax
 
 !---------------------------------------------------------------------
 
