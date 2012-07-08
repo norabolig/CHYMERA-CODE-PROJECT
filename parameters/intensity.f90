@@ -61,7 +61,7 @@ real(kreal), dimension(:,  :), allocatable  ::  Init_int_in    ! ???
 
 contains
  
-subroutine intensity_allocate(jmax2, kmax2, lmax)
+subroutine intensity_allocate
 !=======================================================================
 ! 
 !    intensity_allocate
@@ -69,10 +69,9 @@ subroutine intensity_allocate(jmax2, kmax2, lmax)
 ! Subroutine intensity_allocate allocates the INTENSITY variables.
 !
 !=======================================================================
+use hydroparams, only : jmax2, kmax2, lmax
  
 implicit none
-
-integer, intent(in) :: jmax2, kmax2, lmax
 
 !---------------------------------------------------------------------
 
