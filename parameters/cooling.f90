@@ -57,7 +57,7 @@ real(kreal), dimension(:,:,:,:), allocatable  ::  Radflux        ! ???
 
 contains
  
-subroutine cooling_allocate(jmax2, kmax2, lmax)
+subroutine cooling_allocate
 !=======================================================================
 ! 
 !    cooling_allocate
@@ -65,10 +65,9 @@ subroutine cooling_allocate(jmax2, kmax2, lmax)
 ! Subroutine cooling_allocate allocates the cooling variables.
 !
 !=======================================================================
+use hydroparams, only : jmax2, kmax2, lmax
  
 implicit none
-
-integer, intent(in) :: jmax2, kmax2, lmax
 
 !---------------------------------------------------------------------
 
