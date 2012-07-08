@@ -46,9 +46,9 @@ real(kreal), dimension(:,:,:), allocatable  ::  Qzz            ! ???
 real(kreal), dimension(:,:,:), allocatable  ::  Qtt            ! ???
 real(kreal), dimension(:,:,:), allocatable  ::  Hgamma         ! ???
 
-Contains
+contains
  
-subroutine avis_allocate(jmax2, kmax2, lmax)
+subroutine avis_allocate
 !=======================================================================
 ! 
 !    avis_allocate
@@ -56,10 +56,9 @@ subroutine avis_allocate(jmax2, kmax2, lmax)
 ! Subroutine avis_allocate allocates the Avis variables.
 !
 !=======================================================================
+use hydroparams, only : jmax2, kmax2, lmax
  
 implicit none
-
-integer, intent(in) :: jmax2, kmax2, lmax
 
 !---------------------------------------------------------------------
 
