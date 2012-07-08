@@ -45,7 +45,7 @@ real(kreal), dimension(:,:,:), allocatable  ::  Rhotot         ! ???
 
 contains
  
-subroutine pois_allocate(pot3jmax2, pot3kmax2, lmax)
+subroutine pois_allocate
 !=======================================================================
 ! 
 !    pois_allocate
@@ -53,10 +53,9 @@ subroutine pois_allocate(pot3jmax2, pot3kmax2, lmax)
 ! Subroutine pois_allocate allocates the pois variables.
 !
 !=======================================================================
+use hydroparams, only : pot3jmax2, pot3kmax2, lmax
  
 implicit none
-
-integer, intent(in) :: pot3jmax2, pot3kmax2, lmax
 
 !---------------------------------------------------------------------
 
