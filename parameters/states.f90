@@ -46,7 +46,7 @@ real(kreal), dimension(:,:,:), allocatable  ::  Poly_constant  ! ???
 
 contains
  
-subroutine states_allocate(jmax2, kmax2, lmax)
+subroutine states_allocate
 !=======================================================================
 ! 
 !    states_initialize
@@ -54,10 +54,9 @@ subroutine states_allocate(jmax2, kmax2, lmax)
 ! Subroutine states_allocate allocates the states variables.
 !
 !=======================================================================
+use hydroparams, only : jmax2, kmax2, lmax
  
 implicit none
-
-integer, intent(in) :: jmax2, kmax2, lmax
 
 !---------------------------------------------------------------------
 
