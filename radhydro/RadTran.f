@@ -4,15 +4,20 @@
       use cooling,   only : Lambda, Tau, TeffK, TphK, Surfcgs
       use cooling,   only : TempK, Radflux, Divflux
       use intensity, only : l_tau_z
+      use irrad,     only : Igamma
+      use kinds,     only : kreal
       use pois,      only : Rho
       use states,    only : P, Eps
 
-      IMPLICIT real*8 (a-h,o-z)      
-#include "hydroparam.h"
+! Add only after implicit none
+      use hydroparams
+      use grid
+
+      implicit real*8 (a-h,o-z)
 #include "globals.h"
-#include "units.h"      
       
-      integer jstart,kfit, kfitmax
+      integer :: j, k, l, jstart, kfit, kfitmax
+
       REAL*8 sum,Tfit,Teff4,Tbd4, Tenv4, limiter
       REAL*8 Oross(jmax2,kmax2,lmax),Oplck(jmax2,kmax2,lmax)
      &     ,Oabs(jmax2,kmax2,lmax),Otot(jmax2,kmax2,lmax),absfrac
@@ -730,6 +735,9 @@ C     Pollack et al. (1994) rosseland opacities
 
       FUNCTION XMMW(TK,Pcgs)
 
+! Add only after implicit none
+      use opacity
+
       implicit real*8 (a-h,o-z)
 #include "hydroparam.h"
 #include "globals.h"
@@ -792,8 +800,11 @@ c	 T
       
       SUBROUTINE DALESSIO(TK,Pcgs,Ors,Opl,Oab,Oas)
 
+! Add only after implicit none
+      use hydroparams
+      use opacity
+
       implicit real*8 (a-h,o-z)
-#include "hydroparam.h"
 #include "globals.h"
 
 C     By courtesy of Paola D'Alessio (2002)  
@@ -891,6 +902,9 @@ c	 T
       END
       
       FUNCTION FLUXLMDF(T0,T1,Ors,Ors1,Rho0,Rho1,jpos,dim)
+
+! Add only after implicit none
+      use grid
       
       IMPLICIT real*8 (a-h,o-z)
 #include "hydroparam.h"
@@ -931,6 +945,7 @@ c
       SUBROUTINE HEIGHTS ! THIS IS KEPT HERE FOR BONUS POINTS.
           ! IF YOU FIND IT, YOU GET THE ARCHAEOLOGY AWARD.
       
+      use blok7,   only : den
       use kinds,   only : kreal
       use pois,    only : Rho
       use cooling, only : Tau
@@ -971,14 +986,23 @@ C      enddo
                             ! calculated in setup based on X, Y, Z composition
                             ! and other assumptions.
 
+         use blok6,   only : dtheta
+         use blok7,   only : den
+         use convert, only : engconv, rhoconv, pconv
+         use etally,  only : gamma1, eflufftot
+         use grid,    only : Rhf, rof3n, zof3n
          use kinds,   only : kreal
          use cooling, only : TempK
          use pois,    only : rho
          use states,  only : eps
+         use units,   only : tbgrnd, phylim
+
+         use constants,   only : zero
+         use engtables,   only : Engtable, Temptable, Gammatable
+         use hydroparams, only : lmax, kmax2, jmax2, ttable
+
          implicit none
-#include "hydroparam.h"
 #include "globals.h"
-#include "units.h"
         
          integer :: J,K,L,I 
          real(kreal) :: limiter
@@ -1069,7 +1093,6 @@ C      enddo
       subroutine TempFindSpec(eps,rho,temp)! like TempFind, but for a single cell. 
 
          implicit none
-
 #include "hydroparam.h"
 
          integer I
