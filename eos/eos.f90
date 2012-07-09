@@ -6,30 +6,28 @@ module eos
 ! term is from cameron 1968. This takes into account rotational states for 
 ! hydrogen and 1 vibrational state. zp is the parahydrogen partition function
 ! and dzpdt and ddzpdtt are its derivatives, *e for equilibrium, and *o for ortho.
+
+ use kinds, only : kreal
+
  implicit none
 
 private
-#include "hydroparam.h"
-#include "globals.h"
-#include "units.h"
 
- integer,parameter::pre=8
- real(pre),parameter::kb=1.38065d-16
- real(pre),parameter::hplanck=6.626d-27
- real(pre)::mu_z=16.78d0
- real(pre)::brot=85.4d0
- real(pre)::vib=5987d0
- real(pre)::diss=52000d0
+ real(kreal),parameter::kb=1.38065d-16
+ real(kreal),parameter::hplanck=6.626d-27
+ real(kreal)::mu_z=16.78d0
+ real(kreal)::brot=85.4d0
+ real(kreal)::vib=5987d0
+ real(kreal)::diss=52000d0
 
- real(pre)::drho_eos,log_rho_eos_low,deng_eos,eul
+ real(kreal)::drho_eos,log_rho_eos_low,deng_eos,eul
 
  integer::NEOS_T
 
-
- real(pre),allocatable,dimension(:,:)::gamma_table,gamma_table2
- real(pre),allocatable,dimension(:,:)::eng_table,eng_table2,p_table
- real(pre),allocatable,dimension(:,:)::muc_table,muc_table2,tk_table2
- real(pre),allocatable,dimension(:)::deng_eos_array,rho_table,tk_table
+ real(kreal),allocatable,dimension(:,:)::gamma_table,gamma_table2
+ real(kreal),allocatable,dimension(:,:)::eng_table,eng_table2,p_table
+ real(kreal),allocatable,dimension(:,:)::muc_table,muc_table2,tk_table2
+ real(kreal),allocatable,dimension(:)::deng_eos_array,rho_table,tk_table
  integer::NEOS
  save
 
@@ -40,6 +38,10 @@ private
  contains
 
    subroutine initialize_eos()
+
+     use units, only : tk_eos_cutoff, tk_bgrnd, dTk_eos, rho_eos_low, &
+                       rho_eos_high, neos_rho
+     implicit none
 
      NEOS_T=int((tk_eos_cutoff-tk_bgrnd)/dTk_eos)+1
      drho_eos=(log10(rho_eos_high)-log10(rho_eos_low))/(NEOS_RHO-1)
@@ -62,13 +64,18 @@ private
    end subroutine
 
    subroutine clean_eos()
+     implicit none
      deallocate(gamma_table,tk_table,eng_table,gamma_table2,eng_table2,tk_table2,muc_table,muc_table2,rho_table)
    end subroutine
 
    subroutine h2_partition(t,zp,zo,ze,zoprime,dzpdt,dzodt,dzedt,dzoprimedt)
-     real(pre),intent(in)::t
-     real(pre),intent(out)::zp,zo,ze,zoprime,dzpdt,dzodt,dzedt,dzoprimedt
-     real(pre)::f1,f2,f3,f4
+
+     use constants, only : zero, two, three
+     implicit none
+
+     real(kreal),intent(in)::t
+     real(kreal),intent(out)::zp,zo,ze,zoprime,dzpdt,dzodt,dzedt,dzoprimedt
+     real(kreal)::f1,f2,f3,f4
      integer::j
      zp=zero
      zo=zero
@@ -95,27 +102,41 @@ private
      return
    end subroutine
 
-   real(pre) function translate(m,t,n)
-     real(pre)::m,t,n
+   real(kreal) function translate(m,t,n)
+     use constants, only : pi, two
+     use units,     only : mp
+     implicit none
+     real(kreal)::m,t,n
      translate=eul*(sqrt(two*pi*m*mp*kB*t/hplanck**2))**3/n
      return
    end function
 
-   real(pre) function debroglie(m,t)
-     real(pre)::m,t
+   real(kreal) function debroglie(m,t)
+     use constants, only : pi, two
+     use units,     only : mp
+     implicit none
+     real(kreal)::m,t
      debroglie=hplanck/sqrt(two*pi*m*mp*kB*t)
      return
    end function
 
    subroutine calc_eos_table()
-     real(pre)::t0,tm,tp,denm,denp,den0,logdenp,logdenm,logden0
-     real(pre)::logt0,logtm,gamu=zero,gaml=zero,xdiss,apot
-     real(pre)::zp,zo,ze,dzpdt,dzodt,dzedt,zoprime,dzoprimedt
-     real(pre)::nh,nh2,nhe,nz,trans_h,trans_he,trans_h2,trans_z,zh2_int,rhs
-     real(pre)::den,gam,s0,s1,s2,s3,tk,log_eng_low
+     use constants, only : quarter, half, zero, one, two, four, ten
+     use convert,   only : rhoconv, bkmpcode, engconv
+     use engtables, only : muc
+     use ptrope,    only : gamma
+     use units,     only : xabun, yabun, zabun, neos_rho, rho_eos_low, h2stat, &
+                           ac, bc, bkmpcgs, tk_bgrnd, dtk_eos, mp
+     implicit none
 
-     real(pre),dimension(:),allocatable::xdiss_a
-     real(pre),dimension(:,:),allocatable::sent
+     real(kreal)::t0,tm,tp,denm,denp,den0,logdenp,logdenm,logden0
+     real(kreal)::logt0,logtm,gamu=zero,gaml=zero,xdiss,apot
+     real(kreal)::zp,zo,ze,dzpdt,dzodt,dzedt,zoprime,dzoprimedt
+     real(kreal)::nh,nh2,nhe,nz,trans_h,trans_he,trans_h2,trans_z,zh2_int,rhs
+     real(kreal)::den,gam,s0,s1,s2,s3,tk,log_eng_low
+
+     real(kreal),dimension(:),allocatable::xdiss_a
+     real(kreal),dimension(:,:),allocatable::sent
 
      integer i,irho,itk,irhop,irhom
 
@@ -391,7 +412,8 @@ private
    end subroutine calc_eos_table
 
    subroutine get_gamma_norho(eng,tk,m,gam,irho)
-    real(pre)::eng,tk,gam,m
+    implicit none
+    real(kreal)::eng,tk,gam,m
     integer::ientry,jump,flag,inext,irho
     
     ientry=1
@@ -438,7 +460,11 @@ private
    end subroutine
 
    subroutine get_gamma(eps_loc,rho_loc,tk,m,gam)
-    real(pre)::eng,tk,gam,eps_loc,rho_loc,m
+    use convert, only : rhoconv
+    use units,   only : neos_rho
+
+    implicit none
+    real(kreal)::eng,tk,gam,eps_loc,rho_loc,m
     integer::ientry,jump,flag,inext,irho
     
     irho=min(int( (log10(rho_loc*rhoconv)-log_rho_eos_low)/drho_eos) + 1 ,NEOS_RHO)
@@ -491,7 +517,11 @@ private
    end subroutine
 
    subroutine get_gamma2(eps_loc,rho_loc,tk,m,gam)
-    real(pre)::eng,tk,gam,eps_loc,rho_loc,m
+    use convert, only : rhoconv
+    use units,   only : neos_rho
+
+    implicit none
+    real(kreal)::eng,tk,gam,eps_loc,rho_loc,m
     integer::ientry,irho
 
      irho=min(int( (log10(rho_loc*rhoconv)-log_rho_eos_low)/drho_eos) + 1 ,NEOS_RHO)
@@ -524,7 +554,11 @@ private
    end subroutine
 
    subroutine get_gamma_from_tk(eps_loc,rho_loc,tk,m,gam)
-    real(pre)::tk,gam,eps_loc,rho_loc,m
+    use convert, only : rhoconv
+    use units,   only : neos_rho, tk_bgrnd, dtk_eos
+
+    implicit none
+    real(kreal)::tk,gam,eps_loc,rho_loc,m
     integer::ientry,irho
   
     irho=min(int( (log10(rho_loc*rhoconv)-log_rho_eos_low)/drho_eos) + 1 ,NEOS_RHO)
@@ -541,9 +575,14 @@ private
    end subroutine
 
    subroutine get_gamma_from_p(eps_loc,rho_loc,p_loc,m,gam)
-    real(pre)::p_loc,gam,eps_loc,rho_loc,m
+    use constants, only : zero
+    use convert,   only : rhoconv
+    use units,     only : neos_rho
+
+    implicit none
+    real(kreal)::p_loc,gam,eps_loc,rho_loc,m
     integer::ientry,jump,flag,inext,irho,i,irhop,irho0
-    real(pre)::eps_loc0,eps_loc1,m0,m1,gam0,gam1
+    real(kreal)::eps_loc0,eps_loc1,m0,m1,gam0,gam1
    
      irho0=min(int( (log10(rho_loc*rhoconv)-log_rho_eos_low)/drho_eos) + 1 ,NEOS_RHO)
      if(irho0<1)irho0=1
@@ -616,7 +655,6 @@ private
      end select
     enddo
 
-
    if (irhop>irho0)then
    eps_loc=(eps_loc0+(eps_loc1-eps_loc0)*(rho_loc-rho_table(irho0))/(rho_table(irhop)-rho_table(irho0))) &
        *rho_loc
@@ -627,7 +665,6 @@ private
      m=m0
      gam=gam0
    endif 
-
  
    end subroutine
 
