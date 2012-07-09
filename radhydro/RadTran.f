@@ -9,6 +9,8 @@
       use pois,      only : Rho
       use states,    only : P, Eps
 
+      use coolingshared, only : Oross, Oplck, Oabs, Otot, sum, oplck_env
+
 ! Add only after implicit none
       use hydroparams
       use grid
@@ -18,15 +20,11 @@
       
       integer :: j, k, l, jstart, kfit, kfitmax
 
-      REAL*8 sum,Tfit,Teff4,Tbd4, Tenv4, limiter
-      REAL*8 Oross(jmax2,kmax2,lmax),Oplck(jmax2,kmax2,lmax)
-     &     ,Oabs(jmax2,kmax2,lmax),Otot(jmax2,kmax2,lmax),absfrac
-      REAL*8 Oplck_env(jmax2,kmax2,lmax), Tfit_old
+      REAL*8 Tfit,Teff4,Tbd4, Tenv4, limiter
+      REAL*8 Tfit_old
      &     ,Oplck_ph(jmax2,kmax2,lmax), Oirr, tau_face(kmax2,4)
       REAL*8 Tbdry4, tau_f(jmax2,3),tbgnrd4
       real*8 dtau,dtau1
-      COMMON /COOLINGSHARED/Oross,Oplck,Oabs,Otot,sum, Oplck_env, 
-     &      Oplck_ph
       
       DR=ROF3N
       DZ=ZOF3N
