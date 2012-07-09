@@ -5,6 +5,9 @@ C***********************************************************************
       use pois,   only : Rho
       use states, only : P, Cv, Eps
 
+! Add only after implicit none
+      use grid
+
       IMPLICIT real*8 (a-h,o-z)
 #include "hydroparam.h"
 #include "globals.h"
