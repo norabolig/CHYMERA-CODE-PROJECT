@@ -1,33 +1,37 @@
-      subroutine Hybrid()
+      subroutine Hybrid
 
+      use kinds,     only : kreal
+      use convert,   only : sigma, engconv, tconv, sconv
+      use constants, only : zero, one, two, three, six, seven, eight
+      use constants, only : ten, half, pi
       use cooling,   only : tau, tempk, divflux, radflux, teffk
       use cooling,   only : totdflux
+      use blok6,     only : dtheta
+      use blok7,     only : den, delt
       use pois,      only : rho
       use gap,       only : mdot, tmassacc
+      use grid,      only : R, Rhf, rof3n, zof3n
       use intensity, only : l_tau_z, init_int_in, kfita, dtau_z
       use intensity, only : temporary, intensity_z, int_temp
       use intensity, only : intensity_in_z, sfunc, dsdt, ddsdtt
+      use kant,      only : lo, ccounter, hcounter
       use states,    only : eps
-      use eos,       only : get_gamma2,get_gamma_from_tk
+      use eos,       only : get_gamma2, get_gamma_from_tk
+      use units,     only : phylim, mstar, rstar, tenvk, tbgrnd, jcool,
+     &                      msuncgs
+
+      use coolingshared, only : Oross, Oplck, Oabs, Otot, sum, oplck_env
+      use hydroparams,   only : jmin,jmax,jmax2,kmax,kmax1,kmax2,lmax
 
       implicit none
-#include "hydroparam.h"
-#include "globals.h"
-#include "units.h"
 
-      real(KIND=8) :: dumb ,oldcrate,eps1,tirr,dumbexp
-      real(KIND=8) :: limiter,aconst,bconst,cconst, mu,mmw,gam
-      real(KIND=8) :: FluxLmDf,sum,crate,ctime,maxt,taufld
+      real(kreal) :: dumb,oldcrate,eps1,tirr,dumbexp
+      real(kreal) :: limiter,aconst,bconst,cconst, mu,mmw,gam
+      real(kreal) :: FluxLmDf,crate,ctime,maxt,taufld
+      real(kreal) :: absfrac, tacc, dlimit
       
       integer :: J,K,L,I,LM,LP,ITER,JL,KL,LL
       integer, parameter::maxiter=8
-
-      REAL*8 Oross(jmax2,kmax2,lmax),Oplck(jmax2,kmax2,lmax)
-     &     ,Oabs(jmax2,kmax2,lmax),Otot(jmax2,kmax2,lmax),absfrac,
-     &      oplck_env(JMAX2,KMAX2,LMAX),tacc,dlimit
-     
-
-      COMMON /COOLINGSHARED/Oross,Oplck,Oabs,Otot,sum,oplck_env
 
       logical :: use_acc_luminosity=.false.
 
@@ -546,5 +550,5 @@ C$OMP DO SCHEDULE(STATIC)
       print *, "Maximum iteration count in hybrid, ", iter
       return
 
-      end subroutine Hybrid
+      end subroutine hybrid
   
