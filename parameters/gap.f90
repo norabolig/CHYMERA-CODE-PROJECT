@@ -35,9 +35,9 @@ save
  
 !... Scalar variables
 
-logical      ::  alloc_flag = .FALSE.   ! true if module arrays have been allocated
-integer      ::  jin                    ! ???
-integer      ::  itype                  ! ???
+logical, private ::  alloc_flag = .FALSE. ! true if module arrays have been allocated
+integer          ::  jin                  ! ???
+integer          ::  itype                ! ???
 
 real(kreal)  ::  tmassini    ! ???
 real(kreal)  ::  tmassadd    ! ???

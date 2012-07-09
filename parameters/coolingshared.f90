@@ -33,8 +33,8 @@ save
  
 !... Scalar variables
 
-logical      ::  alloc_flag = .FALSE.   ! true if module arrays have been allocated
-real(kreal)  ::  sum                    ! ???
+logical, private ::  alloc_flag = .FALSE. ! true if module arrays have been allocated
+real(kreal)      ::  sum                  ! ???
 
 !... Array variables
 

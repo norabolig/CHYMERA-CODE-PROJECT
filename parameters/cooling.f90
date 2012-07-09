@@ -40,9 +40,9 @@ save
  
 !... Scalar variables
 
-logical      ::  alloc_flag = .FALSE.   ! true if module arrays have been allocated
-real(kreal)  ::  totcool                ! ???
-real(kreal)  ::  totdflux               ! ???
+logical, private ::  alloc_flag = .FALSE. ! true if module arrays have been allocated
+real(kreal)  ::  totcool                  ! ???
+real(kreal)  ::  totdflux                 ! ???
 
 !... Array variables
 

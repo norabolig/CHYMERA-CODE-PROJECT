@@ -36,11 +36,11 @@ save
  
 !... Scalar variables
 
-logical      ::  alloc_flag = .FALSE.   ! true if module arrays have been allocated
-integer      ::  jreq                   ! ???
-integer      ::  kzpol                  ! ???
-real(kreal)  ::  rof3n                  ! ???
-real(kreal)  ::  zof3n                  ! ???
+logical, private ::  alloc_flag = .FALSE. ! true if module arrays have been allocated
+integer          ::  jreq                 ! ???
+integer          ::  kzpol                ! ???
+real(kreal)      ::  rof3n                ! ???
+real(kreal)      ::  zof3n                ! ???
 
 !... Array variables
 

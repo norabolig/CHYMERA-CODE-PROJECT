@@ -29,7 +29,7 @@ save
  
 !... Scalar variables
 
-logical      ::  alloc_flag = .FALSE.   ! true if module arrays have been allocated
+logical, private ::  alloc_flag = .FALSE. ! true if module arrays have been allocated
 
 !... Array variables
 
