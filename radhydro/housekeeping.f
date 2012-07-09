@@ -62,6 +62,7 @@ C***********************************************************************
       use states, only : P
 
       use constants,   only : half, one, four, six, ten
+      use engtables,   only : muc
       use hydroparams, only : jmin, jmax, jmax1, kmax, kmax1, lmax
 
       implicit none
