@@ -4,18 +4,35 @@ C***********************************************************************
      &                 ISYM,MAXTRM)
       use eos
 
-      use eom,    only : s, t, a, u, w, jn, omega
-      use pois,   only : rho
-      use states, only : p, eps, cv
+      use eom,    only : S, T, A, U, W, Jn, Omega
+      use grid,   only : R, Rhf, Z, Zhf
+      use pois,   only : Rho
+      use states, only : P, Eps, Cv
+
+      use hydroparams, only : jmin, jmin2, jmax, jmax1, jmax2, lmax,
+     &                        kmax, kmax1, kmax2, hj1, hj2, hk1, hk2,
+     &                        pot3jmax, pot3jmax2, pot3kmax, pot3kmax2,
+     &                        lmax2, itable
+
+      use opacity, only : XMMWtable, ROStable, PLKtable, IRRtable,
+     &                    SCAtable, Ttab, Ptab
+
+      use units, only : gridlim, tbgrnd, tenvk, xabun, yabun, zabun,
+     &                  ac, bc, cq, external_pot, h2stat, setunits,
+     &                  ictype, cct, fgsoft, mstar, msuncgs, rdiskau,
+     &                  aucgs, gcgs, sigmacgs, bkmpcgs, mmwfile,
+     &                  rosstablefile, plancktablefile, irrtablefile,
+     &                  scatablefile, phylim, amp0
+
+! Add only after implicit none
+      use engtables
 
 #if PARTICLE>0
       use particle
       implicit real*8(a-h,o-z)
 #else
       implicit real*8(a-h,o-z)
-#include "hydroparam.h"
 #include "globals.h"
-#include "units.h"
 #endif
 
       PARAMETER (JMAX_s=JMAX/2,JMAX_s1=JMAX_s+1,JMAX_s2=JMAX_s+2)
@@ -1411,6 +1428,7 @@ C***********************************************************************
       use cooling, only : Tau
       use eom,     only : S, T, A, U, W, Jn, Omega
       use gap,     only : Starphi, Tinphi
+      use grid,    only : R, Rhf, Z, Zhf
       use pois,    only : Rho, Phi
       use states,  only : Eps, P
 
@@ -1958,20 +1976,25 @@ C***********************************************************************
       subroutine lowresrandom(rho,jn,denny,anggy)
 c     perturb the model with the random perturbation from a low
 c     resolution model.  -rpl feb. 1996
-      IMPLICIT real*8 (a-h,o-z)      
-#include "hydroparam.h"
-      parameter (amp0=0.005)
+      use kinds, only : kreal
+      use hydroparams
+      implicit none
+      integer :: lrkmax1, jratio, kratio, lratio
       parameter (lrkmax1=lrkmax+1)
       parameter (jratio=jmax/lrjmax)
       parameter (kratio=kmax/lrkmax)
       parameter (lratio=lmax/lrlmax)
-      real*8 rho(jmax2,kmax2,lmax)
-      real*8 jn(jmax2,kmax2,lmax)
-      real*8 denny(hj2,hk2)
-      real*8 anggy(hj1,hk1)
-      real*8 pert
+      real(kreal), parameter :: amp0=0.005
+      real(kreal) rho(jmax2,kmax2,lmax)
+      real(kreal) jn(jmax2,kmax2,lmax)
+      real(kreal) denny(hj2,hk2)
+      real(kreal) anggy(hj1,hk1)
+      real(kreal) pert
       integer j,k,l,jj,kk,ll
       integer jmap,kmap,lmap
+
+      procedure() :: rand
+      real(kreal) :: rand
       
       write (3,901) lrjmax,lrkmax,lrlmax,amp0
  901  format(5X,'Random perturbation, lowresmdel: ',I5,'x',I5,'x',
@@ -2016,8 +2039,8 @@ c           pert=drand48()
       Real*8 FUNCTION RAN4(IDUM)
 C* math can be done in integer if two comments Cs are moved
 C* see numerical recipes
-      Implicit None
-      Integer iff,idum,i,inext,inextp,k,ii
+      implicit none
+      integer iff,idum,i,inext,inextp,k,ii
       Real*8 mbig, mseed, mz, fac, ma(55), mj, mk
       save inext,INEXTP, ma
       
