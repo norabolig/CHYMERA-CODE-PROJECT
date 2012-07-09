@@ -31,8 +31,8 @@ save
  
 !... Scalar variables
 
-logical     :: alloc_flag = .FALSE.   ! true if module arrays have been allocated
-real(kreal) :: muc                    ! ???
+logical, private :: alloc_flag = .FALSE.   ! true if module arrays have been allocated
+real(kreal)      :: muc                    ! ???
 
 !... Array variables
 
