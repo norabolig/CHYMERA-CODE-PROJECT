@@ -2,17 +2,21 @@ C***********************************************************************
 C   LIMIT THE VELOCITIES
       SUBROUTINE VLIMIT
 
-      use kinds, only : kreal
-      use eom,   only : S, T, A, U, W, Jn, Omega
-      use pois,  only : Rho
+      use kinds,     only : kreal
+      use blok6,     only : dtheta
+      use constants, only : half, two, pi
+      use eom,       only : S, T, A, U, W, Jn, Omega
+      use grid,      only : Rhf
+      use pois,      only : Rho
+      use relimits,  only : sound
+
+      use hydroparams, only : jmin, jmax1,  kmax1, lmax
 
       implicit none
 
       integer :: j, k, l
       real(kreal) :: vlim
 
-#include "hydroparam.h"
-#include "globals.h"
       integer jstart
       VLIM=two*SOUND
       if (jmin.gt.2) then
@@ -49,9 +53,16 @@ C***********************************************************************
       SUBROUTINE DELTA(TINFO)
       use kinds,  only : kreal
       use avis,   only : Qrr, Qzz, Qtt
+      use blok6,  only : dtheta
+      use blok7,  only : delt, den
       use eom,    only : U, W, Jn
+      use etally, only : gamma1
+      use grid,   only : R, Z, Rhf
       use pois,   only : Rho
       use states, only : P
+
+      use constants,   only : half, one, four, six, ten
+      use hydroparams, only : jmin, jmax, jmax1, kmax, kmax1, lmax
 
       implicit none
 
@@ -60,25 +71,23 @@ C***********************************************************************
       real(kreal) :: f1, f2, chgmax, chgmaxn, speed1
       real(kreal) :: speed2, speed3, speed4, speed5, speed6, speed7
 
-#include "hydroparam.h"
-#include "globals.h"
       logical TINFO
       common /TIMEST/INDX,ISOADI,ALLOW,dmax,CHGMAX
-      real*8 factor,amin
+      real(kreal) factor,amin
       integer J1,K1,L1
       integer jstart
-      real*8 SP(7),RD(jmax1),ZD(kmax1)
-      real*8 amin_cap1
+      real(kreal) SP(7),RD(jmax1),ZD(kmax1)
+      real(kreal) amin_cap1
       integer j1_cap1
       integer k1_cap1
       integer l1_cap1
-      real*8 SP_CAP7
-      real*8 SP_CAP6
-      real*8 SP_CAP5
-      real*8 SP_CAP4
-      real*8 SP_CAP3
-      real*8 SP_CAP2
-      real*8 SP_CAP1
+      real(kreal) SP_CAP7
+      real(kreal) SP_CAP6
+      real(kreal) SP_CAP5
+      real(kreal) SP_CAP4
+      real(kreal) SP_CAP3
+      real(kreal) SP_CAP2
+      real(kreal) SP_CAP1
 C  FACTOR is fraction of courant time being used.
 C  FACTORQ is the fraction of courant time for the av terms.
 C  ALLOW is maximum allowable fractional change in maximum density,
@@ -212,15 +221,23 @@ c     IF(AMINQ.LT.AMIN) WRITE(3,100) DELT,J1,K1,L1,SP,ALLOW,F1,F2,CHGMAX
 C***********************************************************************
       SUBROUTINE CLEANUP
 
-      use gap,    only : tmassadd
+      use kinds,  only : kreal
+      use blok6,  only : dtheta
       use eom,    only : s, t, a
+      use gap,    only : tmassadd
+      use grid,   only : R, Rhf, rof3n, zof3n
       use pois,   only : rho
       use states, only : eps
 
-      IMPLICIT real*8 (a-h,o-z)
-#include "hydroparam.h"
-#include "globals.h"
-      integer jstart
+      use relimits,    only : rholmt, epslmt
+      use hydroparams, only : jmin, jmin1, jmin2, jmax, jmax1, jmax2,
+     &                        kmax, kmax1, kmax2, lmax
+
+      implicit none
+
+      integer :: jstart, j, k, l, lp
+      real(kind=kreal) :: dr
+
       dr=rof3n
       if (jmin.gt.2) then
         jstart=1
@@ -383,15 +400,19 @@ C.....Set quantities below the equatorial plane.
 
 C***********************************************************************
       SUBROUTINE CENTMASS(DISP)
-      use kinds, only : kreal
-      use pois,  only : Rho
+
+      use blok6,     only : dtheta
+      use blok7,     only : time
+      use constants, only : pi
+      use grid,      only : R
+      use kinds,     only : kreal
+      use pois,      only : Rho
+
+      use hydroparams, only : jmax, kmax, lmax
 
       implicit none
 
-      integer :: j, l, k
-
-#include "hydroparam.h"
-#include "globals.h"
+      integer     :: j, l, k
       real(kreal) :: alf, alfa, disp, rm, x, y, cm
       real(kreal) :: Theta(lmax+1)            ! allocated on stack
 !$OMP PARALLEL DEFAULT(SHARED) PRIVATE(RM,K,J,L)                        &
@@ -451,10 +472,12 @@ C***********************************************************************
       use pois,   only : rho
       use states, only : eps
 
-      IMPLICIT real*8 (a-h,o-z)
-#include "hydroparam.h"
-#include "globals.h"
-      integer jstart
+      use hydroparams, only : jmin, jmin2, jmax2, kmax2, lmax
+
+      implicit none
+
+      integer :: jstart, j, k, l
+
       if (jmin.gt.2) then
         jstart=jmin2
       else
