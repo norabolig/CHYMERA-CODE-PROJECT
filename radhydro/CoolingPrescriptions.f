@@ -1,13 +1,18 @@
       subroutine ConstantTcool()
 
-      use cooling, only : TempK, TeffK, TphK, lambda, tau
-      use pois,    only : rho
-      use states,  only : eps
+      use blok7,     only : den
+      use convert,   only : tconv, sigma
+      use constants, only : zero, twothree, two, four, ten
+      use cooling,   only : TempK, TeffK, TphK, lambda, tau
+      use grid,      only : zof3n
+      use pois,      only : rho
+      use states,    only : eps
+      use units,     only : tbgrnd, phylim, jcool, cct, torp
+
+      use hydroparams, only : jmax, jmax1, kmax, lmax
 
       implicit none
-#include "hydroparam.h"
-#include "units.h"
-#include "globals.h"
+
       integer::j,k,l
       real*8::tbgrnd4,limiter
 
@@ -62,15 +67,20 @@ C     Weighted average for photospheric temperature (at tau=2/3)
 
       subroutine TcoolOmega()
 
-      use cooling, only : TeffK, Lambda
-      use eom,     only : omega
-      use pois,    only : rho
-      use states,  only : eps
+      use constants, only : zero, four
+      use convert,   only : tconv, sigma
+      use cooling,   only : TeffK, Lambda
+      use eom,       only : omega
+      use grid,      only : zof3n
+      use pois,      only : rho
+      use relimits,  only : rholmt
+      use states,    only : eps
+      use units,     only : tbgrnd, cct
+
+      use hydroparams, only : jmax1, kmax1, lmax
 
       implicit none
-#include "hydroparam.h"
-#include "units.h"
-#include "globals.h"
+
       integer::j,k,l
       real*8::tbgrnd4
 
