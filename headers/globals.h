@@ -1,30 +1,41 @@
 !***********************************************************************
 !     
-      logical radtrigger
-
       real*8 :: vx,vy,fx,fy,rpstar,phi_star
       COMMON /movingstar/ vx,vy,fx,fy,rpstar,phi_star
 
+#ifdef USE_COMMON_BLOK6
       integer :: KWFW
       real*8 dtheta, pi, grav, bgden, gsoft
       common /blok6/dtheta, pi, grav, bgden, gsoft, KWFW
+#endif
 
+#ifdef USE_COMMON_ETALLY
       real*8 etotfl, efl, eflufftot, gamma1
       COMMON /etally/ etotfl, efl, eflufftot,gamma1(JMAX2,KMAX2,LMAX)
+#endif
 
+#ifdef USE_COMMON_KANT
+      logical radtrigger
       integer HHIT, HCOUNT, LO, CCOUNTER, HCOUNTER
       common /kant/radtrigger,HHIT,HCOUNT,CCOUNTER,HCOUNTER,LO
+#endif
 
+#ifdef USE_COMMON_PTROPE
       REAL*8 KONST,NPRIME,xn,gamma,toverw
       COMMON /PTROPE/XN,GAMMA,KONST,NPRIME,TOVERW
+#endif
 
+#ifdef USE_COMMON_BLOK7
       real*8 rcloud,constp,delt,bdytem,den,time,cormas,epscen
-      COMMON /BLOK7/RCLOUD,CONSTP,DELT,BDYTEM,DEN,TIME,CORMAS,epscen 
+      COMMON /BLOK7/RCLOUD,CONSTP,DELT,BDYTEM,DEN,TIME,CORMAS,epscen
+#endif
 
+#ifdef USE_COMMON_RELIMITS
       real*8 rholmt,epslmt,dumlmt,sound,rholmt_p,rhoa
       COMMON /RELIMITS/RHOLMT,EPSLMT,DUMLMT,sound,rholmt_p,rhoa
+#endif
 
-#if USE_COMMON_GAP==1
+#ifdef USE_COMMON_GAP
       integer jin,itype
       real*8 tmassini,tmassadd,tmassout,tmassacc,mass_star, mdot
       real*8 starphi,tinphi
@@ -34,7 +45,7 @@
      &     jin,itype
 #endif
 
-#if USE_COMMON_EOM==1
+#ifdef USE_COMMON_EOM
       REAL*8 JN,s,t,a,u,w,omega
       COMMON /EOM/                                                      &
      &     S(JMAX2,KMAX2,LMAX),                                         &
@@ -46,7 +57,7 @@
      &     OMEGA(JMAX2,KMAX2,LMAX)
 #endif
 
-#if USE_COMMON_STATES==1
+#ifdef USE_COMMON_STATES
       real*8 p,cv,eps,poly_constant
       COMMON /STATES/ENON,                                              &
      &     P(JMAX2,KMAX2,LMAX),                                         &
@@ -55,7 +66,7 @@
      &     poly_constant(JMAX2,KMAX2,LMAX)
 #endif
 
-#if USE_COMMON_POIS==1
+#ifdef USE_COMMON_POIS
       real*8 phi,rho,rhotot,indirectx,indirecty
       COMMON /POIS/ indirectx,indirecty,                                &
      &   PHI(POT3JMAX2,POT3KMAX2,LMAX),                                 &
@@ -63,13 +74,15 @@
      &   RHOTOT(POT3JMAX2,POT3KMAX2,LMAX)
 #endif
 
+#ifdef USE_COMMON_CONVERT
       real*8 Msyscgs,PKcgs,Tconv,Sconv,Dconv,Pconv,sigma,rhoconv,       &
      &       engconv,bkmpcode
       COMMON /CONVERT/                                                  &
      &     Msyscgs,PKcgs,Tconv,Sconv,                                   &
      &     dconv,Pconv,sigma,rhoconv,engconv,bkmpcode
+#endif
 
-#if USE_COMMON_AVIS==1
+#ifdef USE_COMMON_AVIS
       real*8 qrr,qzz,qtt,hgamma,cs,totheat
       COMMON /AVIS/                                                     &
      &     QRR(JMAX2,KMAX2,LMAX),                                       &
@@ -79,7 +92,7 @@
      &     CS,totheat
 #endif
 
-#if USE_COMMON_COOLING==1
+#ifdef USE_COMMON_COOLING
       real*8 lambda,tau,TempK,TeffK,TphK,Surfcgs,divflux,radflux
       real*8 totcool,totdflux
       COMMON /COOLING/                                                  &
@@ -94,11 +107,14 @@
      &     totcool,totdflux
 #endif
 
+#ifdef USE_COMMON_IRRAD
       real*8 Igamma,totirr
       COMMON /IRRAD/                                                    &
      &     IGAMMA(JMAX2,KMAX2,LMAX),                                    &
      &     totirr
+#endif
    
+#ifdef USE_COMMON_OPACITY
       real*8 xmmwtable,rostable,plktable,irrtable,scatable,ptab,ttab    
       COMMON /OPACITY/                                                  & 
      &     XMMWtable(ITABLE,ITABLE),                                    &
@@ -108,7 +124,9 @@
      &     SCAtable(ITABLE,ITABLE),                                     &
      &     Ptab(ITABLE),                                                &
      &     Ttab(ITABLE)
+#endif
 
+#ifdef USE_COMMON_GRID
       real*8 r,z,rhf,zhf,rof3n,zof3n,enon
       integer jreq,kzpol
       COMMON /GRID/JREQ,KZPOL,                                          &
@@ -117,10 +135,11 @@
      &     RHF(POT3JMAX2),                                              &
      &     ZHF(POT3KMAX2),                                              &
      &     ROF3N,ZOF3N
+#endif
      
-#if USE_COMMON_INTENSITY
+#ifdef USE_COMMON_INTENSITY
       integer :: KFITA
-      real*8 :: temporary,dsdt,sfunc,l_tau_z,dtau_z,                    &
+       real*8 :: temporary,dsdt,sfunc,l_tau_z,dtau_z,                   &
      &          intensity_in_z,intensity_z,ddsdtt,                      &
      &          int_temp,init_int_in 
       common /intensity/ KFITA(JMAX+2,LMAX),                            &
@@ -136,12 +155,16 @@
      &          init_int_in(JMAX+2,LMAX)
 #endif
 
+#ifdef USE_COMMON_ENGTABLES
       real*8 :: temptable,engtable,gammatable,muc
       common /engtables/temptable(TTABLE),engtable(TTABLE),             &
      &        gammatable(TTABLE),muc
+#endif
 
+#ifdef USE_COMMON_OBSOLETE
       real*8 :: a1newr,a1newz
       common/obsolete/a1newr,a1newz
+#endif
 
 #if PASSIVE>0
       real*8 :: passflux
