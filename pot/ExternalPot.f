@@ -1,13 +1,18 @@
       subroutine ExternalPot()
 
+      use blok6, only : dtheta
+      use blok7, only : time
       use kinds, only : kreal
       use gap,   only : starphi, mass_star, tmassacc
+      use grid,  only : Rhf, Zhf, rof3n, zof3n
       use pois,  only : rho, phi, indirectx, indirecty
 
+      use constants,   only : half, two
+      use hydroparams, only : jmin, jmax1, jmax2, kmax1, kmax2, lmax
+
       implicit none
-#include "hydroparam.h"
 #include "globals.h"
-#include "units.h"
+
       integer::J,K,L
       real(kreal)::thisMass,omegaBin2,rcom,theta,x,y
       real(kreal)::rBin,thetaBin,thisTime,omegaBin,massDisk,muMass,rdist
@@ -81,14 +86,17 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       subroutine ExternalPotInit() ! this should be obsolete now
 
+      use blok6, only : dtheta
       use kinds, only : kreal
       use gap,   only : starphi, mass_star, tmassacc
+      use grid,  only : Rhf, Zhf, rof3n, zof3n
       use pois,  only : rho, phi, indirectx, indirecty
 
+      use constants,   only : half, two
+      use hydroparams, only : jmin, jmax1, jmax2, kmax1, kmax2, lmax
+
       implicit none
-#include "hydroparam.h"
 #include "globals.h"
-#include "units.h"
 
       real(kreal)::rBin,thetaBin,thisTime,omegaBin,massDisk,muMass,theta
       integer::J,K,L
