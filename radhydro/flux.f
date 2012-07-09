@@ -2,8 +2,10 @@
 c*******************************************************************************
 c.....Translate cvmgp and cvmgz into equivalent if statements
       FUNCTION SLOPE(f,b,c)
-      implicit real*8 (a-h,o-z)
-      real*8 f,b,c,tmp,tmm
+      use kinds, only : kreal
+      implicit none
+      real(kreal), intent(in) :: f,b,c
+      real(kreal) :: tmp,tmm,slope
       tmp=0.0
       if ((b-c)*(f-b).ge.0.0) tmp=1.0
       tmm=f-c
@@ -16,8 +18,10 @@ c.....Translate cvmgp and cvmgz into equivalent if statements
 c*******************************************************************************
 c.........and van leer interpolation
       FUNCTION VLI(qf,qb,slopf,slopb,vel,dt,dx)
-      implicit real*8 (a-h,o-z)
-c     real*8 qf,qb,slopf,slopb,vel,dt,dx,tmn
+      use kinds, only : kreal
+      implicit none
+      real(kreal), intent(in) :: qf, qb, slopf, slopb, vel, dt, dx
+      real(kreal) :: vli
       if(vel.lt.0.0) then
         vli=qf-(dx+vel*dt)*slopf/(2.*dx)
       else
@@ -34,38 +38,38 @@ c*******************************************************************************
 #else
       SUBROUTINE FLUX(SS,TT,AA,RRHO,EEPS)
 #endif
-      use kinds,  only : kreal
-      use gap,    only : tmassadd
-      use eom,    only : S, T, A, U, W, Omega
-      use pois,   only : Rho
-      use states, only : Eps
+      use kinds,     only : kreal
+      use blok6,     only : dtheta
+      use blok7,     only : delt
+      use constants, only : half, two
+      use gap,       only : tmassadd
+      use grid,      only : R, Rhf, rof3n, zof3n
+      use eom,       only : S, T, A, U, W, Omega
+      use pois,      only : Rho
+      use relimits,  only : rholmt, epslmt
+      use states,    only : Eps
+
+      use hydroparams, only : jmin, jmax, jmin1, jmax1, jmin2, jmax2,
+     &                        kmax, kmax1, kmax2, lmax
 
       implicit none
-#include "hydroparam.h"
-#include "globals.h"
       
       procedure() :: slope, vli
       real(kreal) :: dr, dz, rdm, rdp, rdtheta, xt, slope, vli
 
+      real(kreal) :: SS(JMAX2,KMAX2,LMAX),
+     &               TT(JMAX2,KMAX2,LMAX),
+     &               AA(JMAX2,KMAX2,LMAX),
+     &               RRHO(JMAX2,KMAX2,LMAX),
+     &               EEPS(JMAX2,KMAX2,LMAX)
 #if PASSIVE>0
-      REAL*8 SS(JMAX2,KMAX2,LMAX),
-     &       TT(JMAX2,KMAX2,LMAX),
-     &       AA(JMAX2,KMAX2,LMAX),
-     &       RRHO(JMAX2,KMAX2,LMAX),
-     &       EEPS(JMAX2,KMAX2,LMAX),
-     &       PPASSFLUX(JMAX2,KMAX2,LMAX,PAS)
-#else
-      REAL*8 SS(JMAX2,KMAX2,LMAX),
-     &       TT(JMAX2,KMAX2,LMAX),
-     &       AA(JMAX2,KMAX2,LMAX),
-     &       RRHO(JMAX2,KMAX2,LMAX),
-     &       EEPS(JMAX2,KMAX2,LMAX)
+     REAL(kreal) :: PPASSFLUX(JMAX2,KMAX2,LMAX,PAS)
 #endif
 
 C The following arrays are local to subroutine flux, and should not need 
 C to be placed in common. But the OpenMP version of the code may fail unless 
 C they are.
-      REAL*8 
+      REAL(KREAL) 
      &       VINV(JMAX2),
      &       VINVH(JMAX2),
      &       RD(JMAX2),
