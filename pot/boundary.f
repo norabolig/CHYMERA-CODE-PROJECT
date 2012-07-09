@@ -13,6 +13,10 @@ C  used (see also last dimension of BDYTRM in routine BDYGEN):
 C  If ABS(ISYM) = 1 or 8, dimension them (2*POT3JMAX + POT3KMAX -1).
 C  = 2,3, or 9, dimension them (POT3JMAX + POT3KMAX -1).        
 C                                                                       
+
+! Add only after implicit none
+      use grid
+
       IMPLICIT real*8 (a-h,o-z)                                         
 
 #include "hydroparam.h"
@@ -88,6 +92,9 @@ C**********************************************************************
       SUBROUTINE BDYGEN(MAXTRM,ISYM,REDGE)                              
 
       use pois, only : Rho, Phi
+
+! Add only after implicit none
+      use grid
 
 Cxxx NB:  as presently written the code must be linked with:
 C      f77 -mp boundary.o -Wl,Xlocal,terms_
