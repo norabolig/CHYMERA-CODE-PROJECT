@@ -1,9 +1,7 @@
       module particle
 
+      use kinds, only : kreal
       implicit none
-#include  "units.h"
-#include "hydroparam.h"
-#include "globals.h"  
 
       logical,save::read_particle_file=.true.
       integer,save::P_FILEID=40000
@@ -11,10 +9,10 @@
       integer,save::NPARTICLE=100000
       logical,save,allocatable,dimension(:)::particle_skip
 
-      real*8,save,allocatable,dimension(:)::x_p,y_p,z_p ,mass_p
-      real*8,save,allocatable,dimension(:)::vx_p,vz_p,vy_p
-!!      real*8,save,allocatable,dimension(:)::Ugas,Wgas,Ogas,r_ph
-!!      real*8,save,allocatable,dimension(:)::new_dv_a,new_dv_r,new_dv_z
+      real(kreal),save,allocatable,dimension(:)::x_p,y_p,z_p ,mass_p
+      real(kreal),save,allocatable,dimension(:)::vx_p,vz_p,vy_p
+!!      real(kreal),save,allocatable,dimension(:)::Ugas,Wgas,Ogas,r_ph
+!!      real(kreal),save,allocatable,dimension(:)::new_dv_a,new_dv_r,new_dv_z
 
 
       contains
@@ -25,8 +23,11 @@
 
       subroutine get_cylinder(x,y,r,an)
 
-      real*8, intent(in):: x,y
-      real*8, intent(out)::r,an
+      use constants, only : pi, zero, two, half
+      implicit none
+
+      real(kreal), intent(in):: x,y
+      real(kreal), intent(out)::r,an
 
       r=sqrt(x*x+y*y)
       if(x==zero)then
@@ -53,9 +54,11 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
       subroutine get_cyl_vel(vx,vy,r,an,vr,o)
+
+      implicit none
  
-      real*8,intent(in):: vx,vy,an,r
-      real*8,intent(out)::vr,o
+      real(kreal),intent(in):: vx,vy,an,r
+      real(kreal),intent(out)::vr,o
 
       vr=vx*cos(an)+vy*sin(an)
       o =(vy*cos(an)-vx*sin(an))/r
@@ -69,8 +72,10 @@
 
       subroutine get_cart_vel(vr,o,vx,vy,r,an)
 
-      real*8,intent(in) ::vr,o,r,an
-      real*8,intent(out)::vx,vy
+      implicit none
+
+      real(kreal),intent(in) ::vr,o,r,an
+      real(kreal),intent(out)::vx,vy
 
       vx=vr*cos(an)-o*r*sin(an)
       vy=vr*sin(an)+o*r*cos(an)
@@ -84,8 +89,10 @@
 
       subroutine get_cartesian(r,an,x,y)
 
-      real*8,intent(in )::r,an
-      real*8,intent(out)::x,y
+      implicit none
+
+      real(kreal),intent(in )::r,an
+      real(kreal),intent(out)::x,y
 
       x=r*cos(an)
       y=r*sin(an)
@@ -99,10 +106,15 @@
 
       subroutine set_particle_vel()
 
-      use pois, only : phi, rho
+      use blok6     , only : dtheta
+      use constants , only : zero, one, two
+      use grid      , only : rof3n, zof3n
+      use pois      , only : Phi, Rho
+
+      implicit none
 
       integer::thisj,thisk,thisllow,thislhi,thisl,I
-      real*8::tmp,ran4,mag,r_p,angle_p,vr_p,omega_p
+      real(kreal)::tmp,ran4,mag,r_p,angle_p,vr_p,omega_p
   
       do i=1,nparticle
 
@@ -143,17 +155,24 @@
 
       subroutine initialize_particles() 
 
-      use pois, only : rho
+      use blok6       , only : dtheta
+      use blok7       , only : den
+      use constants   , only : zero
+      use hydroparams , only : jmin, jmax1, kmax1, lmax
+      use grid        , only : R, Z, Rhf, rof3n, zof3n
+      use pois        , only : Rho
+      use units       , only : phylim, dust_to_gas
+
+      implicit none
 
       integer::SEED
       integer*8::N,NF,J,K,L,I,ITER,NSTART
-      real*8::dev_r,tmass,ran4,limiter,max_cell_mass
-      real*8::r_p,angle_p
-
+      real(kreal)::dev_r,tmass,ran4,limiter,max_cell_mass
+      real(kreal)::r_p,angle_p
 
       logical,allocatable,dimension(:)::flag
       integer,allocatable,dimension(:)::JCELL,KCELL,LCELL
-      real*8, allocatable,dimension(:)::mass_cell
+      real(kreal), allocatable,dimension(:)::mass_cell
 
       limiter=den*phylim*1d4
 
@@ -255,13 +274,19 @@
 
       subroutine update_particle_vel(dt)
 
-      use gap,  only : mass_star, starphi
-      use pois, only : rho, phi
+      use blok6       , only : dtheta, gsoft
+      use constants   , only : zero
+      use gap         , only : mass_star, starphi
+      use grid        , only : R, Z, Rhf, rof3n, zof3n
+      use hydroparams , only : jmax2, kmax2, lmax
+      use pois        , only : Rho, Phi
+
+      implicit none
 
       integer::thisJ,thisK,thisLlow,thisLhi,thisL,I,J,K,L
-      real*8::dt,frbottom,frtop,fzbottom,fztop,fabottom,fatop
-      real*8::accr,accz,acca,accx,accy
-      real*8::r_p,angle_p,zalpha,xstar,ystar
+      real(kreal)::dt,frbottom,frtop,fzbottom,fztop,fabottom,fatop
+      real(kreal)::accr,accz,acca,accx,accy
+      real(kreal)::r_p,angle_p,zalpha,xstar,ystar
 
 #if WIGGLE>0
       xstar=rpstar*cos(phi_star)
@@ -354,8 +379,11 @@
 
       subroutine update_particle_pos(dt)
 
+      use constants, only : zero
+      implicit none
+
       integer :: I
-      real*8::dt
+      real(kreal)::dt
 
 !$OMP PARALLEL DEFAULT(SHARED) 
 !$OMP DO SCHEDULE(DYNAMIC)
@@ -387,8 +415,14 @@
 
       subroutine clean_particles
 
+      use constants   , only : zero
+      use grid        , only : R, Z, zof3n
+      use hydroparams , only : jmax1, kmax1
+
+      implicit none
+
       integer::I
-      real*8::r_p,angle_p
+      real(kreal)::r_p,angle_p
 
       do I=1,NPARTICLE
 
@@ -411,10 +445,14 @@
 
       subroutine set_particle_density()
 
-      use pois, only : rho, rhotot
+      use blok6 , only : dtheta
+      use grid  , only : Rhf, rof3n, zof3n
+      use pois  , only : Rho, Rhotot
+
+      implicit none
 
       integer::thisj,thisk,thisL,I
-      real*8::r_p,angle_p
+      real(kreal)::r_p,angle_p
       rhotot=rho
   
       do i=1,NPARTICLE
@@ -443,8 +481,14 @@
 
       subroutine particle_timestep(tmin)
 
+      use blok6     , only : dtheta
+      use constants , only : zero, one
+      use grid      , only : rof3n, zof3n
+
+      implicit none
+
       integer::I
-      real*8::tmin,r_p,angle_p,omega_p,vr_p
+      real(kreal)::tmin,r_p,angle_p,omega_p,vr_p
 
       tmin=1d6
       do I=1,NPARTICLE
@@ -475,9 +519,11 @@
 
       subroutine dump_particles(INDX)
 
+      implicit none
+
       integer::INDX,I
       character::cindex*6,outfile*15
-      real*8:: r_p,an,vr_p,o_p
+      real(kreal):: r_p,an,vr_p,o_p
 
       write(cindex,'(i6.6)')INDX
       outfile="particle."//cindex
@@ -498,6 +544,8 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
       subroutine read_particles(INDX)
+
+      implicit none
 
       integer::INDX,I,II,file_eof
       logical::check_particle
@@ -545,6 +593,8 @@
 
       subroutine clean_stop_particles()
 
+      implicit none
+
       deallocate(x_p,y_p,z_p,mass_p,vx_p,vy_p,vz_p)
 !      deallocate(Ugas,Ogas,Wgas,new_dv_a,new_dv_r,new_dv_z)
       deallocate(particle_skip)
@@ -555,11 +605,14 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-      real*8 function updateDvWithDrag
+      real(kreal) function updateDvWithDrag
      &       (dv,kn,csound,rhogas,rhoa,asize,dt)
+
+      use constants, only : zero, one, two, three, eight, nine, pi
+
       IMPLICIT none
-      real*8::dv,kn,csound,rhogas,rhoa,asize,mach,kd,Re
-      real*8::beta2,beta,alpha,dt,BB,dv_eps,dv_sto,magDv,PQ,PQINV
+      real(kreal)::dv,kn,csound,rhogas,rhoa,asize,mach,kd,Re
+      real(kreal)::beta2,beta,alpha,dt,BB,dv_eps,dv_sto,magDv,PQ,PQINV
 
 
             if(dv==zero)then
@@ -613,17 +666,28 @@
 
       subroutine account_for_drag(dt)
      
-      use cooling, only : tempk
-      use eom,     only : a, s, t, omega, jn
-      use pois,    only : rho, rhotot
+      use blok6       , only : dtheta
+      use blok7       , only : den
+      use constants   , only : half, zero, pi
+      use convert     , only : rhoconv, bkmpcode
+      use cooling     , only : Tempk
+      use eom         , only : A, S, T, Omega, Jn
+      use engtables   , only : muc
+      use etally      , only : gamma1
+      use hydroparams , only : lmax
+      use grid        , only : R, Z, Rhf, rof3n, zof3n
+      use pois        , only : Rho, Rhotot
+      use units       , only : phylim, psize, aucgs, rhoacgs
+
+      implicit none
 
       integer:: I,thisj,thisk,thisl,thisLlow,thisLhi
 
-      real*8::kn,oldTotmom,oldGasmom,Gasmom,ftop,fbottom
-      real*8::new_vel,limiter
-      real*8:: dv_r,dv_a,dv_z,dustRho,csound1,dt
-      real*8::jn_p,omega_p,vr_p,angle_p,r_p
-      real*8::ogas,wgas,ugas,new_dv_a,new_dv_r,new_dv_z
+      real(kreal)::kn,oldTotmom,oldGasmom,Gasmom,ftop,fbottom
+      real(kreal)::new_vel,limiter
+      real(kreal):: dv_r,dv_a,dv_z,dustRho,csound1,dt
+      real(kreal)::jn_p,omega_p,vr_p,angle_p,r_p
+      real(kreal)::ogas,wgas,ugas,new_dv_a,new_dv_r,new_dv_z
 
       logical::trigger=.false.
   
@@ -790,7 +854,11 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       subroutine particle_fullstep(odelt,delt)
 
-      real*8 odelt,delt
+      use constants, only : two
+
+      implicit none
+
+      real(kreal) odelt,delt
 
       call update_particle_vel(odelt)
       call account_for_drag(odelt)
@@ -801,8 +869,6 @@
 
       return
       end subroutine particle_fullstep
-
-
 
       end module
 
