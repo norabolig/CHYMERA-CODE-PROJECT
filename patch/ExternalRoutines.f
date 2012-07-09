@@ -215,20 +215,15 @@
       use states,  only : eps
       use units,   only : phylim, mstar, rstar, msuncgs, jcool, tenvk
 
-      use constants,   only : zero, one, two, six, ten, pi
-      use hydroparams, only : jmax1, jmax2, kmax1, kmax2, lmax
+      use coolingshared, only : Oross, Oplck, Oabs, Otot, sum, oplck_env
+      use constants,     only : zero, one, two, six, ten, pi
+      use hydroparams,   only : jmax1, jmax2, kmax1, kmax2, lmax
 
       implicit none
 #include "globals.h"
       integer::J,K,L
       real(kreal)::limiter,dtau,area,volume,tau_fac,coolTime,etenv
       real(kreal)::ttenv,opacfac,fluxfac,ds,tacc,mmw,gam
-
-      real(kreal) Oross(jmax2,kmax2,lmax),Oplck(jmax2,kmax2,lmax)
-     &     ,Oabs(jmax2,kmax2,lmax),Otot(jmax2,kmax2,lmax),
-     &      oplck_env(JMAX2,KMAX2,LMAX),sum
-
-      COMMON /COOLINGSHARED/Oross,Oplck,Oabs,Otot,sum,oplck_env
 
       logical :: include_accretion=.false.
 
