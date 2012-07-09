@@ -93,12 +93,13 @@
       subroutine getBinaryPosition(tBin,rBin,thetaBin,omegaBin,
      &  massDisk,muBin)
 
-      use gap, only : mass_star
-      use utilities
+      use gap,   only : mass_star
+      use kinds, only : kreal
+      use units, only : massbin, abin, ebin
+
+      use utilities, only : radialCoorKep
 
       implicit none
-#include "hydroparam.h"
-#include "units.h"
 #include "globals.h"
       real(kreal),intent(in)::tBin,massDisk
       real(kreal),intent(out)::rBin,thetaBin,omegaBin,muBin
@@ -125,15 +126,23 @@
 !! THIS IS AN ACCRETION ROUTINE
       subroutine TsigConstant(tmass)
 
+      use blok6,  only : dtheta, gsoft
+      use blok7,  only : delt, den
       use kinds,  only : kreal
       use eom,    only : T, A
       use gap,    only : mass_star
+      use grid,   only : R, Rhf, rof3n, zof3n
       use pois,   only : rho
       use states, only : eps
+      use units,  only : phylim, tenvk
+
+      use constants,   only : zero, two, ten, pi
+      use convert,     only : tconv, bkmpcode
+      use engtables,   only : muc
+      use hydroparams, only : kmax, lmax
+      use relimits,    only : epslmt
 
       implicit none
-#include "hydroparam.h"
-#include "units.h"
 #include "globals.h"
       integer::J,K,L
       integer::JRIN=32,JROUT=152
@@ -196,14 +205,20 @@
 ! into thinking this is terribly accurate. It gets the job done, and it is stable.
 ! Note that ttenv is user specified.
       use kinds,   only : kreal
+      use blok7,   only : delt, den
+      use convert, only : sigma, engconv, tconv
       use cooling, only : TempK, tau, divflux
       use eos,     only : get_gamma_from_tk
       use gap,     only : mdot, tmassacc
+      use grid,    only : Rhf, rof3n
       use pois,    only : rho
       use states,  only : eps
+      use units,   only : phylim, mstar, rstar, msuncgs, jcool, tenvk
+
+      use constants,   only : zero, one, two, six, ten, pi
+      use hydroparams, only : jmax1, jmax2, kmax1, kmax2, lmax
+
       implicit none
-#include "hydroparam.h"
-#include "units.h"
 #include "globals.h"
       integer::J,K,L
       real(kreal)::limiter,dtau,area,volume,tau_fac,coolTime,etenv
