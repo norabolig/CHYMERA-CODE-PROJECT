@@ -1,16 +1,16 @@
       subroutine State() ! this routine calculates the pressure
-        use kinds,   only : kreal
-        use cooling, only : TempK
-        use pois,    only : rho
-        use states,  only : eps, P
-        use eos
+        use eos,         only : get_gamma2
+        use kinds,       only : kreal
+        use cooling,     only : TempK
+        use convert,     only : rhoconv, pconv
+        use etally,      only : gamma1
+        use hydroparams, only : jmax2, jmin, jmin2, kmax2, lmax
+        use pois,        only : rho
+        use states,      only : eps, P
+        use units,       only : bkmpcgs
 
         implicit none
      
-#include "hydroparam.h"
-#include "globals.h"
-#include "units.h"
-
         integer JSTART,J,K,L
         real(kreal) :: mu
 
