@@ -31,6 +31,8 @@ C...ARTIFICAL VISCOSITY IS USED TO TREAT SHOCKS AND HEAT THE MODEL.
 !
 C...THE FOLLOWING SUBROUTINES ARE CALLED:
 c
+!     *allocate_arrays : allocate array variables
+!     *first_touch     : initially define some array variables
 C     *SETUP   :  Read starting models, impose perts, etc. (io.f)
 !     *initengtable : Creates specific energy table for calculating temp. (initengtable.f) ACB
 !     *TempFind:  Finds temperature for each cell. (source.f) ACB
@@ -74,29 +76,28 @@ c     *lowresrandom: low resolution random pert. (io.f)
 !     *Particle routines: see particle_module
 C***********************************************************************
 C     
+      use kinds,   only : kreal
       use avis,    only : Hgamma
+      use coefs,   only : coef
       use cooling, only : TempK, Lambda, Tau, TeffK, Divflux, Radflux
       use cooling, only : TphK
       use eom,     only : S, T, A, Omega
       use states,  only : Eps
       use pois,    only : Rho, Phi
       use passive, only : SS, TT, AA, Rrho, Eeps
-      use eos
+      use eos,     only : initialize_eos
 
-      use avis,      only : avis_allocate
-      use cooling,   only : cooling_allocate
-      use eom,       only : eom_allocate
-      use gap,       only : gap_allocate
-      use intensity, only : intensity_allocate
-      use passive,   only : passive_allocate
-      use pois,      only : pois_allocate
-      use states,    only : states_allocate
+      use coolingshared, only : Oross, Oplck, Oabs, Otot, sum
+
+! Add only after implicit none
+      use engtables
+      use grid
+      use irrad
 
 #if PARTICLE>0
       use particle
       implicit real*8(a-h,o-z)
 #else
-
       implicit real*8(a-h,o-z)
 #include "hydroparam.h"
 #include "globals.h"
@@ -105,10 +106,9 @@ C
 
       COMMON /INSIDE/TMASS,ENEW,ELOST,EDIF,PHICHK,KLOCAT
       COMMON /TIMEST/INDX,ISOADI,ALLOW,DMAX,CHGMAX
-      COMMON /COEFS/COEF(POT3JMAX2,POT3KMAX2,LMAX2,2)
       COMMON /ITS/ITSTRT,ITSTOP,ITSTEP
 
-      real*8 epsjr,rhojr,ommax,mirp
+      real(kreal)   epsjr,rhojr,ommax,mirp
       common /misc/ epsjr,rhojr,ommax
 
 C The following arrays are local to the main program, and should not need 
@@ -145,21 +145,9 @@ C#endif
       DATA ISTRDN,CHANGD/25,2.00/,NCONS,DELCON/10,2.0/
 !$      integer    OMP_GET_MAX_THREADS
 
-      REAL*8 Oross(jmax2,kmax2,lmax),Oplck(jmax2,kmax2,lmax)
-     &     ,Oabs(jmax2,kmax2,lmax),Otot(jmax2,kmax2,lmax)
       logical, save::kick_switch=.false.
-      COMMON /COOLINGSHARED/Oross,Oplck,Oabs,Otot,sum
 
-      call avis_allocate      (jmax2, kmax2, lmax)
-      call cooling_allocate   (jmax2, kmax2, lmax)
-      call eom_allocate       (jmax2, kmax2, lmax)
-      call gap_allocate       (jmax2, kmax2, lmax)
-      call intensity_allocate (jmax2, kmax2, lmax)
-      call states_allocate    (jmax2, kmax2, lmax)
-#if PASSIVE>0
-      call passive_allocate   (jmax2, kmax2, lmax, pas)
-#endif
-      call pois_allocate      (pot3jmax2, pot3kmax2, lmax)
+      call allocate_arrays
 !
 ! FIRST TOUCH: INITIALIZE ALL ARRAYS.  THIS IS NOT ONLY GOOD PRACTICE, BUT
 ! IT CAN SIGNICANTLY SPEED UP THE OPENMP CODE.  THE ARRAYS ARE MORE 
@@ -866,7 +854,58 @@ C.........Run Diagnostics Follow.........C
       END
 
 
-      subroutine first_touch()
+      subroutine allocate_arrays
+!=======================================================================
+! 
+!    allocate_arrays
+!
+! Subroutine allocate_arrays allocates array variables.  This has been
+! done to move array placement from the stack to the heap.
+!
+!=======================================================================
+      use avis,      only : avis_allocate
+      use coefs,      only : coefs_allocate
+      use cooling,   only : cooling_allocate
+      use engtables, only : engtables_allocate
+      use eom,       only : eom_allocate
+      use etally,    only :etally_allocate
+      use gap,       only : gap_allocate
+      use grid,      only : grid_allocate
+      use intensity, only : intensity_allocate
+      use irrad,     only : irrad_allocate
+      use opacity,   only : opacity_allocate
+      use passive,   only : passive_allocate
+      use pois,      only : pois_allocate
+      use states,    only : states_allocate
+
+      use coolingshared, only : coolingshared_allocate
+
+      implicit none
+
+!---------------------------------------------------------------------
+
+      call avis_allocate
+      call coefs_allocate
+      call cooling_allocate
+      call eom_allocate
+      call gap_allocate
+      call intensity_allocate
+      call states_allocate
+#if PASSIVE>0
+      call passive_allocate
+#endif
+      call pois_allocate
+
+      call coolingshared_allocate
+      call engtables_allocate
+      call etally_allocate
+      call grid_allocate
+      call irrad_allocate
+      call opacity_allocate
+
+      end subroutine allocate_arrays
+
+      subroutine first_touch
 !
 !     touch every field array  to organize data placement
 !
@@ -881,9 +920,11 @@ C.........Run Diagnostics Follow.........C
       use intensity, only : Intensity_in_z, Intensity_z, Ddsdtt
       use intensity, only : Int_temp, Init_int_in, Kfita
 
+      use constants,   only : zero
+      use hydroparams, only : jmax2, kmax2, lmax
+
       implicit none
 
-#include "hydroparam.h"
 #include "globals.h"
 
       integer :: I, J, L, K
@@ -955,4 +996,4 @@ C.........Run Diagnostics Follow.........C
       rpstar = zero
       phi_star=zero
       return
-      END
+      end subroutine first_touch
