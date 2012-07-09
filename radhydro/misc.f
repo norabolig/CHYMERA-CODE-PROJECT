@@ -3,12 +3,14 @@ C***********************************************************************
 
       use kinds, only : kreal
       use eom,   only : S, T, A, U, W, Jn, Omega
+      use grid,  only : Rhf
       use pois,  only : Rho
+
+      use constants,   only : zero, two
+      use hydroparams, only : jmin, jmin1, jmax1, kmax1, kmax2, lmax
 
       implicit none
 
-#include "units.h"
-#include "hydroparam.h"
 #include "globals.h"
       real(kreal) rhox(kmax2)
       save rhox
