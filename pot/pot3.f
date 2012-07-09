@@ -14,13 +14,17 @@ C*******************************************************************************
 
       SUBROUTINE POT3(NPOINT,IPRINT)
 
-      use pois, only : Phi, Rho
+      use blok6, only : kwfw
+      use coefs, only : coef
+      use pois,  only : Phi, Rho
+
+! Add only after implicit none
+      use grid
 
       IMPLICIT real*8 (a-h,o-z)      
 
 #include "hydroparam.h"
 #include "globals.h"
-      COMMON /COEFS/COEF(pot3JMAX2,pot3KMAX2,LMAX2,2)
 
 C A1 and B1  should be dimensioned lmax.  They're used in fft.
       DIMENSION A1(LMAX),B1(LMAX)
@@ -313,7 +317,11 @@ c*******************************************************************************
 
       SUBROUTINE ZAXPHI(NPOINT,IPRINT)
 
-      use pois, only : Phi
+      use coefs, only : coef
+      use pois,  only : Phi
+
+! Add only after implicit none
+      use grid
 
       IMPLICIT real*8 (a-h,o-z)      
 
@@ -321,7 +329,6 @@ c*******************************************************************************
 #include "globals.h"
 
       COMMON /INSIDE/TMASS,ENEW,ELOST,EDIF,PHICHK,KLOCAT
-      COMMON /COEFS/COEF(POT3JMAX2,POT3KMAX2,LMAX2,2)
 
       DIMENSION X(10),PHI2(10),PH(LMAX),PHAC(KMAX2)
 C     PHAC IS DIMENSIONED KMAX2? PH IS DIMENSIONED LMAX/2.
