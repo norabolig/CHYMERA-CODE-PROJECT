@@ -180,23 +180,18 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       subroutine simpleCool
+      use coolingshared, only : Oross, Oplck, Oabs, Otot, sum, Oplck_env
+
 ! radiative cooling routine.  Very simple and easy.  Don't fool yourself
 ! into thinking this is terribly accurate. It gets the job done, and it is stable.
 ! Note that ttenv is user specified.
       use eos, only : get_gamma_from_tk
+
       implicit none
-#include "hydroparam.h"
-#include "units.h"
 #include "globals.h"
       integer::J,K,L
       real*8::limiter,dtau,area,volume,tau_fac,coolTime,etenv
       real*8::ttenv,opacfac,fluxfac,ds,tacc,mmw,gam
-
-      REAL*8 Oross(jmax2,kmax2,lmax),Oplck(jmax2,kmax2,lmax)
-     &     ,Oabs(jmax2,kmax2,lmax),Otot(jmax2,kmax2,lmax),
-     &      oplck_env(JMAX2,KMAX2,LMAX),sum
-
-      COMMON /COOLINGSHARED/Oross,Oplck,Oabs,Otot,sum,oplck_env
 
       logical :: include_accretion=.false.
 
