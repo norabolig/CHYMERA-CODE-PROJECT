@@ -6,6 +6,10 @@
       use states,  only : P, Eps
       use eos
 
+! Add only after implicit none
+      use grid
+      use irrad
+
       IMPLICIT real*8 (a-h,o-z)      
 
 #include "hydroparam.h"
