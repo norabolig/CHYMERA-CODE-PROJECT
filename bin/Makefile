@@ -18,13 +18,16 @@
   DOPT+=-DNOLIMIT
  endif
 
- OBJ = kinds.o constants.o avis.o cooling.o eom.o gap.o intensity.o pois.o\
-       states.o passive_module.o particle_module.o eos.o 3dhyd-main.o\
-       fft.o flux.o housekeeping.o io.o misc.o\
+ OBJ = kinds.o constants.o units.o ptrope.o hydroparams.o blok6.o blok7.o\
+       inside.o eom.o misc_module.o obsolete.o irrad.o etally.o convert.o\
+       avis.o cooling.o coolingshared.o\
+       engtables.o gap.o grid.o kant.o coefs.o opacity.o relimits.o\
+       intensity.o pois.o states.o passive_module.o particle_module.o eos.o\
+       3dhyd-main.o fft.o flux.o housekeeping.o io.o misc.o\
        pot3.o rad.o source.o\
        state.o boundary.o blktri.o\
-       avisc.o hybrid.o \
-       CoolingPrescriptions.o RadTran.o \
+       avisc.o hybrid.o\
+       CoolingPrescriptions.o RadTran.o\
  
  ifeq ($(EXTERNAL_POT),1)
    OBJ+=ExternalPot.o
