@@ -52,24 +52,23 @@ C***********************************************************************
 c...arrays for various starts (see itype below).  Eventually,
 c...only the arrays in POIS, STATE, and EOM are evolved.
 
-c..axisymmetric start from the hachisu code (256x256) grid
-      dimension denny(hj2,hk2),anggy(hj1,hk1)
-c..axisymmetric start from formatted files (ie generated from the 2D hydrocode)
-      real*8 s_axi(jmax2,kmax2),t_axi(jmax2,kmax2),a_axi(jmax2,kmax2),
-     &     rho_axi(jmax2,kmax2),eps_axi(jmax2,kmax2)
-c..start for a doubling of the radial grid
-      real*8 s_r(jmax_s2,kmax2,lmax), t_r(jmax_s2,kmax2,lmax), 
-     &     a_r(jmax_s2,kmax2,lmax), rho_r(jmax_s2,kmax2,lmax),
-     &     eps_r(jmax_s2,kmax2,lmax)
-c..start for a doubling of the vertical grid
-      real*8 s_z(jmax2,kmax_s2,lmax), t_z(jmax2,kmax_s2,lmax), 
-     &     a_z(jmax2,kmax_s2,lmax), rho_z(jmax2,kmax_s2,lmax),
-     &     eps_z(jmax2,kmax_s2,lmax)
-c..start for a doubling of the radial and vertical grids
-      real*8 s_rz(jmax_s2,kmax_s2,lmax), t_rz(jmax_s2,kmax_s2,lmax), 
-     &     a_rz(jmax_s2,kmax_s2,lmax), rho_rz(jmax_s2,kmax_s2,lmax),
-     &     eps_rz(jmax_s2,kmax_s2,lmax)
+c...allocate local arrays to avoid seg faults related to stack overflow
+      logical, save ::  alloc_flag = .FALSE.   ! true if local arrays have been allocated
 
+c..axisymmetric start from the hachisu code (256x256) grid
+      real(kreal), allocatable :: denny(:,:), anggy(:,:)
+c..axisymmetric start from formatted files (ie generated from the 2D hydrocode)
+      real(kreal), allocatable :: s_axi(:,:), t_axi(:,:), a_axi(:,:),
+     &                            rho_axi(:,:), eps_axi(:,:)
+c..start for a doubling of the radial grid
+      real(kreal), allocatable :: s_r(:,:,:), t_r(:,:,:), 
+     &                            a_r(:,:,:), rho_r(:,:,:), eps_r(:,:,:)
+c..start for a doubling of the vertical grid
+      real(kreal), allocatable :: s_z(:,:,:), t_z(:,:,:), 
+     &                            a_z(:,:,:), rho_z(:,:,:), eps_z(:,:,:)
+c..start for a doubling of the radial and vertical grids
+      real(kreal), allocatable :: s_rz(:,:,:), t_rz(:,:,:), a_rz(:,:,:),
+     &                            rho_rz(:,:,:), eps_rz(:,:,:)
 
       CHARACTER resfile*80,index*6
       DATA CURLYR,XMU/83.14,2.0/
@@ -115,6 +114,23 @@ C              PERTURB IT WITH RANDOM PERTURBATION.
      &NUMBER ',I8,' AND',/,' GOING THROUGH TIMESTEP NUMBER ',I8,'.  FULL
      &DIAGNOSTICS EVERY ',I5,' STEPS.',///)
 
+      if (.not. alloc_flag) then
+         allocate (denny(hj2,hk2),anggy(hj1,hk1))
+         allocate (s_axi(jmax2,kmax2), t_axi(jmax2,kmax2),
+     &             a_axi(jmax2,kmax2), rho_axi(jmax2,kmax2),
+     &             eps_axi(jmax2,kmax2))
+         allocate (s_r(jmax_s2,kmax2,lmax), t_r(jmax_s2,kmax2,lmax), 
+     &             a_r(jmax_s2,kmax2,lmax), rho_r(jmax_s2,kmax2,lmax),
+     &             eps_r(jmax_s2,kmax2,lmax))
+         allocate (s_z(jmax2,kmax_s2,lmax), t_z(jmax2,kmax_s2,lmax), 
+     &             a_z(jmax2,kmax_s2,lmax), rho_z(jmax2,kmax_s2,lmax),
+     &             eps_z(jmax2,kmax_s2,lmax))
+         allocate (s_rz(jmax_s2,kmax_s2,lmax),
+     &       t_rz(jmax_s2,kmax_s2,lmax), 
+     &       a_rz(jmax_s2,kmax_s2,lmax), rho_rz(jmax_s2,kmax_s2,lmax),
+     &       eps_rz(jmax_s2,kmax_s2,lmax))
+         alloc_flag = .TRUE.
+      end if
 
 c-------------------------------------------------------------------------------
 c  Read run parameter file.
@@ -1415,6 +1431,15 @@ C....SET RHO AROUND Z-AXIS AND BELOW THE EQUATORIAL PLANE
 !$OMP END DO NOWAIT
 !$OMP END PARALLEL
       
+      if (alloc_flag) then
+         deallocate (denny, anggy)
+         deallocate (s_axi, t_axi, a_axi, rho_axi, eps_axi)
+         deallocate (s_r, t_r, a_r, rho_r, eps_r)
+         deallocate (s_z, t_z, a_z, rho_z, eps_z)
+         deallocate (s_rz, t_rz, a_rz, rho_rz, eps_rz)
+         alloc_flag = .FALSE.
+      end if
+
       RETURN
       END
 
