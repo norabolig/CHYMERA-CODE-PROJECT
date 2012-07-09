@@ -26,6 +26,7 @@ C***********************************************************************
 
 ! Add only after implicit none
       use engtables
+      use ptrope
 
 #if PARTICLE>0
       use particle
