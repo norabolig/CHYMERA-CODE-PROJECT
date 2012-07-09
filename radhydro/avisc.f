@@ -5,16 +5,16 @@ C...VISCOSITY COEFFICIENTS
 C
       SUBROUTINE AVISC
 
-      use kinds, only : kreal
-      use avis,  only : Qrr, Qzz, Qtt
-      use eom,   only : U, W, Omega
-      use pois,  only : Rho
+      use kinds,       only : kreal
+      use avis,        only : Qrr, Qzz, Qtt
+      use blok7,       only : den
+      use eom,         only : U, W, Omega
+      use grid,        only : Rhf, rof3n, zof3n
+      use hydroparams, only : jmin, jmax, kmax, lmax
+      use pois,        only : Rho
+      use units,       only : cq, phylim
 
       implicit none
-
-#include "hydroparam.h"
-#include "globals.h"
-#include "units.h"
 
       real(kreal) :: delvt, delvz, delvr, dr, dz, rholmtav
       integer     :: j, k, l, lm, lp, jstart
