@@ -40,4 +40,32 @@ real(kreal)  ::  gsoft          ! ???
 
 !---------------------------------------------------------------------
 
+contains
+
+subroutine blok6_initialize
+!=======================================================================
+! 
+!    blok6_initialize
+!
+! subroutine blok6_initialize initializes the blok6 variables.
+!
+!=======================================================================
+use constants,   only : one, two
+use hydroparams, only : kmax
+
+implicit none
+
+!---------------------------------------------------------------------
+
+!... Initialize the variables
+
+kwfw = int(log10(dble(kmax))/log10(two)) - 1    ! this is used in pot3.f
+
+dtheta = one
+grav   = one
+bgden  = one
+gsoft  = one
+
+end subroutine blok6_initialize
+
 end module blok6
