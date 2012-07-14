@@ -19,8 +19,8 @@
        avis.o cooling.o coolingshared.o\
        engtables.o gap.o grid.o kant.o coefs.o opacity.o relimits.o\
        intensity.o pois.o states.o passive_module.o particle_module.o eos.o\
+       potential.o rad.o source.o\
        3dhyd-main.o fft.o flux.o housekeeping.o io.o misc.o\
-       pot3.o rad.o source.o\
        state.o boundary.o blktri.o\
        avisc.o hybrid.o\
        CoolingPrescriptions.o RadTran.o\
