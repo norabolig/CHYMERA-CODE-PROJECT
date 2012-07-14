@@ -86,8 +86,10 @@ C
       use pois,    only : Rho, Phi
       use passive, only : SS, TT, AA, Rrho, Eeps
       use eos,     only : initialize_eos
+      use blok6,   only : blok6_initialize
 
       use coolingshared, only : Oross, Oplck, Oabs, Otot, sum
+      use potential,     only : pot3
 
 ! Add only after implicit none
       use engtables
@@ -189,7 +191,6 @@ C....START EVOLUTION
       A1NEWR=zero
       A1NEWZ=zero
       OMMAX=zero ! just define it.  Tracking down old uses still
-      KWFW=int(log10(dble(KMAX))/log10(two))-1 ! this is used in pot3.f
       
 cbkp..cs=0 for no shear viscosity (not implemented yet, so don't diddle!)
 crpl..xxxtodo: make this parameter a read-in.      
@@ -199,6 +200,7 @@ crpl..xxxtodo: make this parameter a read-in.
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
       call initialize_eos()
+      call blok6_initialize
 
       CALL SETUP(ITSTRT,ITSTOP,IDIAG,ISOADI,ISTOR,ITSTEP,
      &           ISYM,MAXTRM)
