@@ -24,6 +24,8 @@ C***********************************************************************
      &                  rosstablefile, plancktablefile, irrtablefile,
      &                  scatablefile, phylim, amp0
 
+      use potential, only : pot3
+
 ! Add only after implicit none
       use engtables
       use ptrope
