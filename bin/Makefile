@@ -83,12 +83,12 @@ chymera-ser: dummy
            exit 1;\
          fi\
         fi
-	@if [ $(EXTERNAL_POT) -eq "0" ] ;then\
-         if [ $(INDIRECT) -ne "0" ] ; then\
-           echo 'EXTERNAL_POT SET TO ZERO WHILE INDRECT=1';\
+	@if [ $(EXTERNAL_POT) -eq "0" ] ; then\
+         if [ $(INDIRECT) -ne "0" ]; then\
+           echo 'EXTERNAL_POT SET TO ZERO WHILE INDIRECT=1';\
            exit 1;\
-         fi
-	fi
+          fi\
+        fi
 	make target "TARGET= $(EXEDIR)/chymera-ser" \
  "FC=$(F95)" "CFLAGS=$(CFLAGS) $(TARCH) $(DOPT)"  \
  "CC=$(CC)"  \
