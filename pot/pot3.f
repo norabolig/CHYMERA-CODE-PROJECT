@@ -310,7 +310,7 @@ C$OMP END PARALLEL
 
 
       RETURN
-      END                                                                
+      END SUBROUTINE POT3
 
 
 c*******************************************************************************
@@ -431,6 +431,5 @@ C         ENDDO
       END IF
 10110 FORMAT(20X,I5,' COEFS=',1P8E12.3,/,25X,' PHASE=',0P8F12.2)
 
-
       RETURN
-      END
+      END SUBROUTINE ZAXPHI
