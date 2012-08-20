@@ -241,8 +241,8 @@ private
      ! This part is a pain, but it is a straight-forward way to derive the adiabatic index
      if(H2STAT>=0)then
      do irho=1,NEOS_RHO
-       irhop=irho+1
-       irhom=irho-1
+       irhop = MERGE(irho+1, NEOS_RHO, irho .LT. NEOS_RHO)
+       irhom = MERGE(irho-1,        1, irho .GT. 1)
        den0=rho_table(irho)
        logden0=log(den0)
        denm=rho_table(irhom)
