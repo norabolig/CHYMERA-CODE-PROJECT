@@ -16,7 +16,7 @@
 
  OBJ = kinds.o constants.o units.o ptrope.o hydroparams.o blok6.o blok7.o\
        inside.o eom.o misc_module.o obsolete.o irrad.o etally.o convert.o\
-       avis.o cooling.o coolingshared.o\
+       avis.o cooling.o coolingshared.o timest.o\
        engtables.o gap.o grid.o kant.o coefs.o opacity.o relimits.o\
        intensity.o pois.o states.o passive_module.o particle_module.o eos.o\
        potential.o rad.o source.o\
