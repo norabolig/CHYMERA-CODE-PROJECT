@@ -1,28 +1,35 @@
       SUBROUTINE SOURCE
-      use avis,    only : Hgamma, Qrr, Qzz, Qtt
-      use cooling, only : Tau, Divflux, Lambda, Radflux
-      use eom,     only : S, T, A, U, W, Omega
-      use pois,    only : Rho, Phi
-      use states,  only : P, Eps
-      use eos
+      use avis,     only : Hgamma, Qrr, Qzz, Qtt, totheat, cs
+      use blok6,    only : dtheta
+      use blok7,    only : den, delt,time
+      use constants,only : zero, quarter, half, one, two, twothree, ten
+      use convert,  only : rhoconv, tconv, sconv, pconv
+      use cooling,  only : Tau, Divflux, Lambda,Radflux,totcool,totdflux
+      use eom,      only : S, T, A, U, W, Omega
+      use eos,      only : get_gamma2
+      use etally,   only : etotfl, efl
+      use grid,     only : R, Rhf, rof3n, zof3n
+      use relimits, only : epslmt,rholmt
+      use kant,     only : hcount, hhit
+      use kinds,    only : kreal
+      use irrad,    only : Igamma, totirr
+      use pois,     only : Rho, Phi
+      use states,   only : P, Eps
+      use units,    only : phylim, theatlmt, ictype, bkmpcgs, jcool
 
-! Add only after implicit none
-      use grid
-      use irrad
+      use hydroparams, only : jmin, jmin1, jmax, jmax1, jmax2,
+     &                        kmax, kmax1, kmax2, lmax
 
-      IMPLICIT real*8 (a-h,o-z)      
+      implicit none
 
-#include "hydroparam.h"
-#include "globals.h"
-#include "units.h"
+      integer :: j, k, l, lm, lp, jstart
+      real(kreal) :: VT(JMAX2,KMAX2,LMAX),dume,limiter,surflux,gam,mu
+      real(kreal) :: epred, tpred, ppred, dr, dz
 
-      integer jstart
-      REAL*8 VT(JMAX2,KMAX2,LMAX),dume,limiter,surflux,gam,mu
       COMMON /SOURCESHARED/VT,surflux
 
-      real*8 epred,tpred,ppred
 #if BINARY>0
-      real*8 thisTime,rBin,thetaBin,omegaBin,massDisk,muMass
+      real(kreal) :: thisTime,rBin,thetaBin,omegaBin,massDisk,muMass
 #endif
 
       DR=ROF3N
@@ -95,7 +102,7 @@ C......SOURCE A.
 
 !$OMP PARALLEL DEFAULT(SHARED) PRIVATE(dume,ppred,tpred,epred,j,k,LP,LM,&
 !$OMP& l,mu,gam)                                                        &
-!$OMP&  SHARED(etotfl,efl,rholmt,epslmt,pconv,muc,rhoconv,HHIT,         &
+!$OMP&  SHARED(etotfl,efl,rholmt,epslmt,pconv,rhoconv,HHIT,             &
 !$OMP& HCOUNT,dtheta,dz,delt,DR,jstart,zof3n,rof3n) REDUCTION(+:surflux,&
 !$OMP& totirr,totdflux,totheat,totcool)
       CALL VELOCITY
@@ -330,4 +337,4 @@ C....Set quantities on the bottom of the grid.
 !$OMP END PARALLEL
 
       RETURN
-      END
+      END SUBROUTINE SOURCE
