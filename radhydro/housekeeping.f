@@ -14,10 +14,9 @@ C   LIMIT THE VELOCITIES
 
       implicit none
 
-      integer :: j, k, l
+      integer :: j, k, l, jstart
       real(kreal) :: vlim
 
-      integer jstart
       VLIM=two*SOUND
       if (jmin.gt.2) then
         jstart=jmin
@@ -46,7 +45,7 @@ C   LIMIT THE VELOCITIES
         ENDDO
 !$OMP END DO
       RETURN
-      END
+      END SUBROUTINE VLIMIT
 
 
 C***********************************************************************
@@ -60,6 +59,7 @@ C***********************************************************************
       use grid,   only : R, Z, Rhf
       use pois,   only : Rho
       use states, only : P
+      use timest, only : dmax, allow, indx, chgmax
 
       use constants,   only : half, one, four, six, ten
       use engtables,   only : muc
@@ -67,14 +67,12 @@ C***********************************************************************
 
       implicit none
 
-      integer     :: j, k, l, indx, isoadi
-      real(kreal) :: allow, dmax, dmaxo, delt1, delt2, delt3
-      real(kreal) :: f1, f2, chgmax, chgmaxn, speed1
+      integer     :: j, k, l
+      real(kreal) :: dmaxo, delt1, delt2, delt3, factor, amin
+      real(kreal) :: f1, f2, chgmaxn, speed1
       real(kreal) :: speed2, speed3, speed4, speed5, speed6, speed7
 
       logical TINFO
-      common /TIMEST/INDX,ISOADI,ALLOW,dmax,CHGMAX
-      real(kreal) factor,amin
       integer J1,K1,L1
       integer jstart
       real(kreal) SP(7),RD(jmax1),ZD(kmax1)
@@ -216,7 +214,7 @@ c     IF(AMINQ.LT.AMIN) WRITE(3,100) DELT,J1,K1,L1,SP,ALLOW,F1,F2,CHGMAX
      &  '  SP(1:7)   ',1P7E12.3,/,'  ALLOW     ',1PE12.3,/,             &
      &  '  F1,F2     ',1P2E12.3,/,'  CHGMAX    ',1PE12.3)
       RETURN
-      END
+      END SUBROUTINE DELTA
 
 
 C***********************************************************************
@@ -396,7 +394,7 @@ C.....Set quantities below the equatorial plane.
         enddo
 !$OMP END DO
       RETURN
-      END
+      END SUBROUTINE CLEANUP
 
 
 C***********************************************************************
@@ -464,7 +462,7 @@ C***********************************************************************
    40 FORMAT(' CENTER OF MASS:   TIME='1PE12.4,'  X=',1PE12.4,'     Y=',&
      &1PE12.4,'   DISPLACEMENT=',1PE12.4,'   ANGLE=',0PF7.2)
       RETURN
-      END
+      END SUBROUTINE CENTMASS
 
 
 C***********************************************************************
@@ -500,6 +498,4 @@ C***********************************************************************
         ENDDO
 !$OMP END DO nowait
       RETURN
-      END
-
-
+      END SUBROUTINE CLEARUP
