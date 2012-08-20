@@ -33,10 +33,15 @@ save
 ! A1 and B1  should be dimensioned lmax.  They're used in fft.
 real(kreal) :: A1(LMAX), B1(LMAX)
 
+
+
+!************************ rtumblin 7/23/12 does this conflict with later define?
+integer :: npoint, iprint  ! used in io.f also
+!*************************
+
 integer, private, parameter :: jmax3 = jmax - 1
 integer, private, parameter :: kmax3 = kmax - 1
 integer, private, parameter :: lmax1 = lmax/2 + 1
-
 ! These next arrays are used in blktri. The size of wfw(max) is given by
 ! max. ge. (2*(kmax3+2)*(log2(kmax3+1)-1) + 6*jmax3+2).
 real(kreal), private :: AN(KMAX3),BN(KMAX3),CN(KMAX3), AM(JMAX3),BM(JMAX3)
@@ -65,9 +70,9 @@ subroutine pot3(npoint, iprint)
 !=======================================================================
 
 use kinds, only : kreal
-use blok6, only : dtheta, grav, kwfw
+use blok6, only : dtheta, grav, kwfw, bgden
 use coefs, only : Coef
-use grid,  only : Rhf, Zhf
+use grid,  only : R, Rhf, Z, Zhf, rof3n, zof3n, kzpol, jreq 
 use pois,  only : Phi, Rho
 
 use constants,   only : pi
@@ -96,13 +101,13 @@ logical :: INIT_BLKTRI
 allocate( WFW(2*(KMAX3+2)*KWFW+6*JMAX3+2) )
 
 #if PARTICLE>0
-!$OMP PARALLEL DEFAULT(PRIVATE) SHARED(PHI,RHOTOT,COEF,
+!$OMP PARALLEL DEFAULT(PRIVATE) SHARED(PHI,RHOTOT,COEF,  &
 #else
-!$OMP PARALLEL DEFAULT(PRIVATE) SHARED(PHI,RHO,COEF,
+!$OMP PARALLEL DEFAULT(PRIVATE) SHARED(PHI,RHO,   COEF,  &
 #endif
-!$OMP& r,rhf,z,zhf,rof3n,zof3n,dtheta,pi
-!$OMP&         ,grav,bgden,JREQ,KZPOL)
-!$OMP&  PRIVATE(J,K,L,M,WFW)
+!$OMP      r,rhf,z,zhf,rof3n,zof3n,dtheta,               &
+!$OMP      grav,bgden,JREQ,KZPOL)                        &
+!$OMP      PRIVATE(J,K,L,M,WFW)                            
 
 N=LMAX/2
 IF(LMAX.EQ.1) N=1
