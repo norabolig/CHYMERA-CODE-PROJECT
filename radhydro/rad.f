@@ -1,22 +1,32 @@
 C***********************************************************************
       SUBROUTINE RAD(I)
 
+      use blok7,  only : bdytem
       use eom,    only : S, T, A
+      use grid,   only : R, Z
+      use inside, only : edif, edif, elost, enew
+      use kinds,  only : kreal
       use pois,   only : Rho
       use states, only : P, Cv, Eps
+      use blok6,  only : dtheta
+      use ptrope, only : gamma
 
-! Add only after implicit none
-      use grid
+      use hydroparams, only : jmax1, jmax2, kmax1, kmax2, lmax
 
-      IMPLICIT real*8 (a-h,o-z)
-#include "hydroparam.h"
-#include "globals.h"
-      common /INSIDE/TMASS,ENEW,ELOST,EDIF,PHICHK,KLOCAT
-C Arrays rd and zd are used only in this subroutine, and thus should not
-C need to be put in a common block. But the OpenMP version of the code
-C might fail if they are not.
-      real*8 RD(jmax2),ZD(kmax2)
-      common /RADPRIVATE/RD,ZD
+      implicit none
+
+      integer     :: i, j, k, l
+      real(kreal) :: eossum, epssum, epsnew, area2, vol, e1, e2, en
+
+!...allocate local arrays to avoid seg faults related to stack overflow
+      logical, save ::  alloc_flag = .FALSE.   ! true if local arrays have been allocated
+      real(kreal), allocatable :: Rd(:), Zd(:)
+
+      if (alloc_flag == .FALSE.) then
+         allocate( RD(jmax2), ZD(kmax2) )
+         alloc_flag = .TRUE.
+      end if
+
 C     EVENTUALLY THIS ROUTINE WILL DO THE RADIATIVE TRANSFER.
 C     IF I=1, ISOTHERMAL CLOUD.
 C     IF I=2, ADIABATIC COLLAPSE.
@@ -132,6 +142,4 @@ C-----------------------------------------------------------------------
   999 CONTINUE
 
       RETURN
-      END
-
-
+      END SUBROUTINE RAD
