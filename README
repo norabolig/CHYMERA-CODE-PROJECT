@@ -1,3 +1,7 @@
+This code is largely legacy code from the IU Hydrodynamics Group code, but with some newer alorgithms 
+and functionality. This includes particle tracking, new radiation transport, and gas-solid interactions.
+The parallelization has also been updated.  The basic code structure (for better or worse!) remains the same.
+
 * COMPILE contains information on compiling the code.
 * VERSION discusses some of the code's structure, capabilities, and updates over time.
 
